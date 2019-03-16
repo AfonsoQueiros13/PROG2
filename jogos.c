@@ -19,7 +19,7 @@ vetor* jogos_load(const char *nomef){
     }
          while ( fgets ( jogos_epl, sizeof jogos_epl, fp ) != NULL ) /* read a line */
          {
-            fputs ( jogos_epl, stdout ); /* write the line in array */
+            fputs (jogos_epl, stdout); /* write the line in array */
          }
     fclose(fp);
     return jogos_epl;
