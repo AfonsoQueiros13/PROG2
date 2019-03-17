@@ -11,24 +11,38 @@
 
 
 vetor* jogos_load(const char *nomef){
-    vetor *jogos_epl;
+    vetor*jogos_epl =  vetor_novo();
+    int c;
     FILE *fp= fopen(nomef,"r");
     if (fp == NULL){
-        printf("Error opening file");
+        printf("Error opening file\n");
         return NULL;
     }
-         while ( fgets ( jogos_epl, sizeof jogos_epl, fp ) != NULL ) /* read a line */
-         {
-            fputs (jogos_epl, stdout); /* write the line in array */
-         }
+    while ((c = fgetc(fp)) != EOF)
+{
+    //jogos_epl->elementos->epoca[i]=
+    fscanf(fp, "%s", jogos_epl);
+    //jogos_epl->elementos->epoca[i]=(char)jogos_epl;
+    printf("%s\n",jogos_epl);
+    //printf("%c\n",jogos_epl->elementos->epoca[i]);
+
+}
+    //printf("%c",jogos_epl->elementos->epoca[i]);
+
     fclose(fp);
     return jogos_epl;
 }
 
 
 int jogos_save(vetor *vec, const char *nomef){
-
-    return -1;
+  FILE *fp= fopen(nomef,"wb");
+  if (fp == NULL){
+      printf("Error opening file\n");
+      return -1;
+  }
+  fwrite(vec, sizeof(char), sizeof(vec), fp);
+  fclose(fp);
+  return sizeof(vec->tamanho);
 }
 
 

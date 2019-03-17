@@ -377,7 +377,7 @@
 15/16 Swansea Man_City 1 1 0 0
 15/16 Watford Sunderland 2 2 0 0
 15/16 West_Brom Liverpool 1 1 0 0
-15/16 Man_United Bournemouth 3 1 0 0    
+15/16 Man_United Bournemouth 3 1 0 0
 16/17 Burnley Swansea 0 1 0 0
 16/17 Crystal_Palace West_Brom 0 1 0 0
 16/17 Everton Tottenham 1 1 0 0
