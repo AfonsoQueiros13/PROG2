@@ -9,6 +9,7 @@
 int main(void){
   vetor* vec_jogos= vetor_novo();
   vec_jogos= jogos_load("stats.txt");
-  //printf
+  printf("Vec_jogos: \n ");
+  fputs (vec_jogos, stdout);
   return 0;
 }
