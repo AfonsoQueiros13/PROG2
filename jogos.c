@@ -9,38 +9,34 @@
 #include <stdio.h>
 #include <string.h>
 
-
+//--------------------------FUNCAO JOGOS_LOAD---------------------------------------------------------//
 vetor* jogos_load(const char *nomef){
-    vetor*jogos_epl =  vetor_novo();
-    int c;
+    vetor *jogos_epl[3000];
+    char line[3000];
+    int i=0;
     FILE *fp= fopen(nomef,"r");
     if (fp == NULL){
         printf("Error opening file\n");
         return NULL;
     }
-    while ((c = fgetc(fp)) != EOF)
-{
-    //jogos_epl->elementos->epoca[i]=
-    fscanf(fp, "%s", jogos_epl);
-    //jogos_epl->elementos->epoca[i]=(char)jogos_epl;
-    printf("%s\n",jogos_epl);
-    //printf("%c\n",jogos_epl->elementos->epoca[i]);
-
-}
-    //printf("%c",jogos_epl->elementos->epoca[i]);
-
+    while(fgets(line, sizeof line, fp)!=NULL)
+    {
+        jogos_epl[i]= (vetor*) line;
+        printf("%s", jogos_epl[i]);
+        i++;
+    }
     fclose(fp);
     return jogos_epl;
 }
-
-
+//--------------------------FUNCAO JOGOS_SAVE---------------------------------------------------------//
 int jogos_save(vetor *vec, const char *nomef){
-  FILE *fp= fopen(nomef,"wb");
+  FILE *fp= fopen(nomef,"w");
   if (fp == NULL){
       printf("Error opening file\n");
       return -1;
   }
-  fwrite(vec, sizeof(char), sizeof(vec), fp);
+  
+  fprintf(fp,"%s",vec);
   fclose(fp);
   return sizeof(vec->tamanho);
 }
