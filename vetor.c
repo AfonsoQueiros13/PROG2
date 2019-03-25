@@ -47,8 +47,6 @@ vetor_equipas* vetor_equipas_novo()
 // vetor
 void vetor_apaga(vetor* vec)
 {
-	int i;
-
 	if(vec == NULL)
 	return;
 
@@ -62,8 +60,6 @@ void vetor_apaga(vetor* vec)
 // vetor_equipas
 void vetor_equipas_apaga(vetor_equipas* vec_eq)
 {
-	int i;
-
 	if(vec_eq == NULL)
 	return;
 
@@ -77,8 +73,6 @@ void vetor_equipas_apaga(vetor_equipas* vec_eq)
 // vetor
 int vetor_atribui(vetor* vec, int pos, jogo jogo1)
 {
-	unsigned int len_valor;
-
 	if (vec == NULL || pos < 0 || pos >= vec->tamanho)
 	return -1;
 
@@ -91,8 +85,6 @@ int vetor_atribui(vetor* vec, int pos, jogo jogo1)
 // vetor_equipas
 int vetor_equipas_atribui(vetor_equipas* vec_eq, int pos, equipa equipa1)
 {
-	unsigned int len_valor;
-
 	if (vec_eq == NULL || pos < 0 || pos >= vec_eq->tamanho)
 	return -1;
 
@@ -141,7 +133,7 @@ equipa *vetor_equipas_elemento(vetor_equipas* vec_eq, int pos)
 // vetor
 int vetor_insere(vetor* vec, jogo jogo1, int pos)
 {
-	int i, n;
+	int i;
 
 	if(vec == NULL || pos < -1 || pos > vec->tamanho)
 		return -1;
@@ -181,7 +173,7 @@ int vetor_insere(vetor* vec, jogo jogo1, int pos)
 // vetor_equipas
 int vetor_equipas_insere(vetor_equipas* vec_eq, equipa equipa1, int pos)
 {
-	int i, n;
+	int i;
 
 	if(vec_eq == NULL || pos < -1 || pos > vec_eq->tamanho)
 		return -1;

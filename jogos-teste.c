@@ -186,7 +186,7 @@ int teste_pontos_de_equipa()
 
 	printf("pontos_de_equipa(): ");
 	vetor *v = jogos_load(FICH1); 
-	int corrigido = corrige_jogo(v, FICH3); 
+	corrige_jogo(v, FICH3); 
 	int pontos = pontos_de_equipa(v, "Man_City", "17/18");  
 
 	if(pontos==-1){
