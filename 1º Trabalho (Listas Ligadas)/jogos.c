@@ -186,7 +186,6 @@ void quickSort(vetor_equipas *v, equipa *equipa1, char items[][20],int *diferenc
   char *x;
   char temp[20];
   int aux;
-  int diff_golos[25];
   i = left;
   j = right;
   x = items[(left+right)/2];
