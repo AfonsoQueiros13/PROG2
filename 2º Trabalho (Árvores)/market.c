@@ -1,7 +1,7 @@
-/*****************************************************************/
-/*           Market | PROG2 | MIEEC | 2018/19                */
-/*****************************************************************/
-
+            /*****************************************************************/
+            /*           Market | PROG2 | MIEEC | 2018/19                */
+            /*****************************************************************/
+//****INCLUDES E DEFINES NECESSÁRIOS**************************************//
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +13,7 @@
 #define FILHO_ESQ(x) 	(x*2)
 #define FILHO_DIR(x) 	(x*2+1)
 
-//Declaracao funcoes auxiliares//
+//**************DECLARACAO DE FUNÇÕES AUXILIARES**********************************//
 int maior_que(elemento_t * e1, elemento_t * e2);
 int avl_altura(no_avl *no);
 int calc_balanceamento(no_avl *N);
@@ -25,13 +25,19 @@ int max(int a, int b);
 int min(int a, int b);
 
 
-//////   Implementacao Elemento e Calculo Metrica (5.1)  ///////
+//*****************EXERCICIO 5.1****************************************************//
 
 elemento_t* elemento_novo(const char* nameItem, const char* expDate, int qty, int sellRate)
 {
-
-    //Default
-    return NULL;
+    
+    elemento_t* elemento;
+    strcpy(elemento->nameItem,nameItem);
+    printf("\n%s",elemento->nameItem);
+    strcpy(elemento->expirationDate,expDate);
+    elemento->qty = qty;
+    elemento->sellRate = sellRate;
+    elemento->priorityVal = calcMetrica(elemento);
+    return elemento;
 }
 
 void elemento_apaga(elemento_t* elem)
@@ -44,10 +50,13 @@ void elemento_apaga(elemento_t* elem)
 
 float calcMetrica(elemento_t* elem)
 {
-
-    //Default
-    return 0;
-}
+    struct tm date1, date2;
+    strptime(elem->expirationDate, "%F", &date1);
+    strptime(CURDATE, "%F", &date2);
+    float metrica = (double)1/(difftime(mktime(&date1), mktime(&date2)) + (double)(1000/elem->sellRate));
+    printf("\n%lf",metrica);
+    return metrica;
+} 
 
 
 ///////////////////////////////////////////////////
