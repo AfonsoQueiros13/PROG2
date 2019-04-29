@@ -56,26 +56,26 @@ float calcMetrica(elemento_t* elem)
     strptime(elem->expirationDate, "%F", &tm);
     strptime(CURDATE, "%F", &tm1);
     diff=difftime(tm.tm_mday,tm1.tm_mday);
-    double metrica=1/(diff+(double)(1000/elem->sellRate));
+    double metrica=1/(diff+(double)(1000.0/elem->sellRate));
     return metrica;
 } 
 
-
-///////////////////////////////////////////////////
-
-/// Implementacao Heaps (5.2) ///
+//***************************PILHAS (5.2)********************************//
 
 heap* heap_nova(int capacidade)
 {
-
-    //Default
-    return NULL;
+	heap *pilha = (heap*) malloc(sizeof(heap*));
+	if(pilha == NULL)
+		return NULL;
+	/* pilha esta' vazia */
+	pilha->capacidade = capacidade;
+    return pilha;
 }
 
 void heap_apaga(heap *h)
 {
-	//Default
-    return;
+	free(h);
+    h = NULL;
 }
 
 
@@ -114,8 +114,17 @@ int heap_insere(heap *h, elemento_t* elem)
 
 elemento_t* heap_remove(heap * h)
 {
-
-    //Default
+    elemento_t * aux;
+	int i;
+    /* enquanto elemento for mais prioritario do que o respetivo pai, troca-os */
+	while (i != RAIZ && maior_que(h->elementos[i], h->elementos[PAI(i)]))
+	{
+		aux = h->elementos[PAI(i)];
+		h->elementos[PAI(i)] = h->elementos[i];
+		h->elementos[i] = aux;
+		i = PAI(i);
+	}
+    elemento_apaga(aux);
     return NULL;
 }
 
