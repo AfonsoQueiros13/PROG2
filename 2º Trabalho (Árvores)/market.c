@@ -125,7 +125,7 @@ elemento_t* heap_remove(heap * h)
 		i = PAI(i);
 	}
     elemento_apaga(aux);
-    return NULL;
+    return aux;
 }
 
 
