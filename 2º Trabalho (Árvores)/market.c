@@ -32,8 +32,8 @@ elemento_t* elemento_novo(const char* nameItem, const char* expDate, int qty, in
     elemento_t* elemento = (elemento_t*)malloc(sizeof(elemento_t*));
 	if(elemento == NULL)
 	    return NULL;
-    strncpy(elemento->nameItem,nameItem,sizeof(nameItem));
-    strncpy(elemento->expirationDate,expDate,sizeof(expDate));
+    strcpy(elemento->nameItem,nameItem);
+    strcpy(elemento->expirationDate,expDate);
     elemento->qty = qty;
     elemento->sellRate = sellRate;
     elemento->priorityVal = calcMetrica(elemento);
@@ -56,7 +56,7 @@ float calcMetrica(elemento_t* elem)
     strptime(elem->expirationDate, "%F", &tm);
     strptime(CURDATE, "%F", &tm1);
     diff=difftime(tm.tm_mday,tm1.tm_mday);
-    double metrica=1/(diff+(double)(1000.0/elem->sellRate));
+    double metrica=1/(diff+(1000.0/elem->sellRate));
     return metrica;
 } 
 
@@ -64,12 +64,13 @@ float calcMetrica(elemento_t* elem)
 
 heap* heap_nova(int capacidade)
 {
-	heap *pilha = (heap*) malloc(sizeof(heap*));
-	if(pilha == NULL)
+	heap *monte = (heap*) malloc(sizeof(heap*));
+	if(monte == NULL)
 		return NULL;
-	/* pilha esta' vazia */
-	pilha->capacidade = capacidade;
-    return pilha;
+	monte->capacidade = capacidade;
+    monte->tamanho=0;
+    monte->elementos = (elemento_t**) malloc(sizeof(elemento_t**));
+    return monte;
 }
 
 void heap_apaga(heap *h)
@@ -114,20 +115,14 @@ int heap_insere(heap *h, elemento_t* elem)
 
 elemento_t* heap_remove(heap * h)
 {
-    elemento_t * aux;
-	int i;
-    /* enquanto elemento for mais prioritario do que o respetivo pai, troca-os */
-	while (i != RAIZ && maior_que(h->elementos[i], h->elementos[PAI(i)]))
-	{
-		aux = h->elementos[PAI(i)];
-		h->elementos[PAI(i)] = h->elementos[i];
-		h->elementos[i] = aux;
-		i = PAI(i);
-	}
-    elemento_apaga(aux);
-    return aux;
+    elemento_t * elem;
+    elem = h->elementos[h->tamanho]; //ulima posicao tem o elemento mais "urgente"
+    elemento_apaga(elem);
+    h->tamanho--;
+    if(!elem)
+        return NULL;
+    return elem;
 }
-
 
 
 void mostraHeap(heap *h)
