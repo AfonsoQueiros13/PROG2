@@ -29,11 +29,11 @@ int min(int a, int b);
 
 elemento_t* elemento_novo(const char* nameItem, const char* expDate, int qty, int sellRate)
 {
-    
-    elemento_t* elemento;
-    strcpy(elemento->nameItem,nameItem);
-    printf("\n%s",elemento->nameItem);
-    strcpy(elemento->expirationDate,expDate);
+    elemento_t* elemento = (elemento_t*)malloc(sizeof(elemento_t*));
+	if(elemento == NULL)
+	    return NULL;
+    strncpy(elemento->nameItem,nameItem,sizeof(nameItem));
+    strncpy(elemento->expirationDate,expDate,sizeof(expDate));
     elemento->qty = qty;
     elemento->sellRate = sellRate;
     elemento->priorityVal = calcMetrica(elemento);
@@ -46,15 +46,17 @@ void elemento_apaga(elemento_t* elem)
     elem = NULL;
 }
 
-//   Implementacao metrica prioridade  //
+//****************************CALCULO METRICA PRIORIDADE***********************************//
 
 float calcMetrica(elemento_t* elem)
 {
-    struct tm date1, date2;
-    strptime(elem->expirationDate, "%F", &date1);
-    strptime(CURDATE, "%F", &date2);
-    float metrica = (double)1/(difftime(mktime(&date1), mktime(&date2)) + (double)(1000/elem->sellRate));
-    printf("\n%lf",metrica);
+    struct tm tm,tm1;
+    time_t t,t1;
+    int diff;
+    strptime(elem->expirationDate, "%F", &tm);
+    strptime(CURDATE, "%F", &tm1);
+    diff=difftime(tm.tm_mday,tm1.tm_mday);
+    double metrica=1/(diff+(double)(1000/elem->sellRate));
     return metrica;
 } 
 

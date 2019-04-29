@@ -2,14 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#define _XOPEN_SOURCE /* glibc2 needs this */
-
-int main(){
 
 
-    struct tm date1, date2;
-    strptime( "2017-03-21", "%F", &date1 );
-    strptime( "2018-01-20", "%F", &date2 );
-    printf("%.0lf\n", difftime(mktime(&date1), mktime(&date2)));
-    return 0;
+void main(){
+struct tm tm,tm1;
+time_t t,t1;
+int diff;
+
+if (strptime("2010-02-20", "%F", &tm) == NULL)
+    /* Handle error */;
+
+if (strptime("2010-02-21", "%F", &tm1) == NULL)
+    /* Handle error */;
+
+
+printf("year: %d; month: %d; day: %d;\n",
+        tm.tm_year, tm.tm_mon, tm.tm_mday);
+
+printf("year: %d; month: %d; day: %d;\n",
+        tm1.tm_year, tm1.tm_mon, tm1.tm_mday);
+
+
+
+
+diff=difftime(tm1.tm_mday,tm.tm_mday);
+printf("diff= %d",diff);
+
 }
