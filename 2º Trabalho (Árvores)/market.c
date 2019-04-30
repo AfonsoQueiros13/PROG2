@@ -215,7 +215,7 @@ no_avl* avl_insere(no_avl *no, category_t* categ)
         return avl_novo_no(categ);
     if (strcmp(categ->categName, no->categ->categName) < 0)
         no->esquerda  = avl_insere(no, categ);
-    else if(strcmp(categ, no->categ->categName) > 0)
+    else if(strcmp(categ->categName, no->categ->categName) > 0)
         no->direita = avl_insere(no, categ);
     else {
         return no;
@@ -361,20 +361,38 @@ void avl_apaga(arvore_avl* avl)
     free(avl);
 }
 
-///////////////////////////////////////
-
-
-
-///   Implementacao adicao artigo (5.4)
+//******************************ARTIGO_ADICIONA (5.4)************************************//
 int artigo_adiciona(arvore_avl *avl, elemento_t* elem, char *categName, int capCateg)
 {
+    no_avl * no;
+    printf("\naqui");
+    heap* h;
+    //procurar categoria na arvore, se nao tiver é preciso adicionar, por outras palavras 
+    //se avl_pesquisa()==NULL então avl_insere(); visto
+    //adicionar o artigo se nao existir
+    //verificar se a adicao nao passa a capacidade da heap
+        avl= avl_nova();
+        no = avl_pesquisa(avl->raiz,categName);
+        if(no==NULL)
+            no= avl_novo_no(no->categ);
+        if(no->categ->itemTree->tamanho>capCateg)
+            return 0;
+        else
+            return 1;
+        
+        
+        
 
-    //Default
-    return 0;
+   
 
+
+   
+
+
+
+
+    return 1;
 }
-
-//////////////////////////////////////////////
 
 
 ///   Implementacao montagem montra (5.5)   ///
@@ -384,13 +402,7 @@ elemento_t** criar_montra(arvore_avl* avl, const char* categName, int numPorItem
     return NULL;
 }
 
-//////////////////////////////////////////////
-
-
-
-
-
-// Auxiliary functions
+//*******************************FUNCOES AUXILIARES*********************************//8
 
 int maior_que(elemento_t* e1, elemento_t* e2)
 {
