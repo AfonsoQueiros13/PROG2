@@ -115,13 +115,12 @@ int heap_insere(heap *h, elemento_t* elem)
 
 elemento_t* heap_remove(heap * h)
 {
-    elemento_t * elem;
-    elem = h->elementos[h->tamanho]; //ulima posicao tem o elemento mais "urgente"
-    elemento_apaga(elem);
+    elemento_t *maximo = h->elementos[1]; //posicao 1 tem o elemento mais prioritário!!
+    elemento_t *aux= maximo;
     h->tamanho--;
-    if(!elem)
+    if(!aux)
         return NULL;
-    return elem;
+    return aux;
 }
 
 
@@ -139,9 +138,7 @@ void mostraHeap(heap *h)
 }
 
 
-//////////////////////////////////////////////
-
-/// Implementacao criacao categoria nova ///
+//********************Implementacao criacao categoria nova****************************************//
 
 category_t* novaCategoria(heap* itemTree, char* categName)
 {
@@ -178,10 +175,7 @@ void categoriaApaga(category_t* categ)
     categ = NULL;
 }
 
-
-////////////////////////////////////////////
-
-//////   Implementacao AVLs (5.3)  ///////
+//*************************AVL (5.3)**************************************//
 
 arvore_avl* avl_nova()
 {
@@ -211,18 +205,23 @@ no_avl* avl_novo_no(category_t* categ)
     no->direita  = NULL;
     no->altura = 0;  /* novo no e' inicialmente uma folha */
     return no;
-
-    // Default
+    //default
     return NULL;
 }
 
 no_avl* avl_insere(no_avl *no, category_t* categ)
 {
-
-    // Default
+    if (no == NULL)
+        return avl_novo_no(categ);
+    if (strcmp(categ->categName, no->categ->categName) < 0)
+        no->esquerda  = avl_insere(no, categ);
+    else if(strcmp(categ, no->categ->categName) > 0)
+        no->direita = avl_insere(no, categ);
+    else {
+        return no;
+         }
     return NULL;
 }
-
 no_avl* avl_remove(no_avl *no, const char* categStr)
 {
     // Implementacao exercicio 5.4.4
@@ -335,6 +334,17 @@ no_avl* avl_remove(no_avl *no, const char* categStr)
 
 no_avl* avl_pesquisa(no_avl *no, const char* categStr)
 {
+    if(no == NULL)
+        return NULL;
+
+    if(strcmp(categStr, no->categ->categName) < 0)
+        return avl_pesquisa(no->esquerda,categStr);
+
+    else if(strcmp(categStr, no->categ->categName) > 0)
+        return avl_pesquisa(no->direita, categStr);
+
+    else
+        return no;
 
     // Default
     return NULL;
