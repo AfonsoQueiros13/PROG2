@@ -58,7 +58,7 @@ float calcMetrica(elemento_t* elem)
     int diff;
     strptime(elem->expirationDate, "%F", &tm);
     strptime(CURDATE, "%F", &tm1);
-    diff=difftime(tm.tm_mday,tm1.tm_mday);
+    diff=difftime(tm.tm_mday,tm1.tm_mday)+((tm.tm_mon-tm1.tm_mon)*30)+((tm.tm_year-tm1.tm_year)*365);
     double metrica=1/(diff+(1000.0/elem->sellRate));
     return metrica;
 } 
@@ -119,11 +119,49 @@ int heap_insere(heap *h, elemento_t* elem)
 
 elemento_t* heap_remove(heap * h)
 {
-    elemento_t *maximo = h->elementos[1]; //posicao 1 tem o elemento mais prioritário!!
+    /*elemento_t *maximo = h->elementos[1]; //posicao 1 tem o elemento mais prioritário!!
     elemento_t *aux= maximo;
     h->tamanho--;
     if(!aux)
         return NULL;
+    return aux;*/
+    if(!h || !h->tamanho)
+    {
+        return 0;
+    }
+
+    elemento_t *maximo = h->elementos[1];
+    elemento_t *ultimo = h->elementos[h->tamanho];
+    h->elementos[h->tamanho] = 0;
+    --h->tamanho;
+
+    if(h->tamanho)
+    {
+        int pos, filho;
+        for(pos = 1; pos*2 <= h->tamanho; pos = filho)
+        {
+            filho = pos*2;
+            if(filho < h->tamanho && maior_que(h->elementos[filho+1], h->elementos[filho]))
+            {
+                ++filho;
+            }
+
+            if(maior_que(h->elementos[filho], ultimo))
+            {
+                h->elementos[pos] = h->elementos[filho];
+            }
+            else
+            {
+                break;
+            }
+        }
+        h->elementos[pos] = ultimo;
+    }
+
+  
+    elemento_t * aux = malloc (sizeof (elemento_t*));
+    aux = h->elementos[1];
+    free(maximo);
     return aux;
 }
 
@@ -227,14 +265,47 @@ no_avl* avl_insere(no_avl *no, category_t* categ)
     else {
         return no;
          }
-    return NULL;
+    
+    no->altura = max(avl_altura(no->esquerda), avl_altura(no->direita)) + 1;
+
+    /* 3. calcula o fator de balanceamento deste no ancestral para verificar
+       se deixou de estar balanceado */
+    int balance = calc_balanceamento(no);
+
+    /* se o no deixou de estar balanceado, existem 4 casos */
+
+    if (balance > 1) {
+        /* Arvore e' right-heavy */
+    	if (calc_balanceamento(no->direita) < 0) {
+    		/* Sub-arvore direita é left-heavy */
+            /* Rotacao RL */
+			no->direita = roda_direita(no->direita);
+			return roda_esquerda(no);
+    	} else {
+    		/* Rotacao L */
+    		return roda_esquerda(no);
+    	}
+    }
+    else if (balance < -1) {
+        /* Arvore e' left-heavy */
+    	if (calc_balanceamento(no->esquerda) > 0) {
+            /* Sub-arvore esquerda é right-heavy */
+    		/* Rotacao LR */
+			no->esquerda = roda_esquerda(no->esquerda);
+			return roda_direita(no);
+    	} else {
+    		/* Rotacao R */
+    		return roda_direita(no);
+    	}
+    }
+    /* caso esteja balanceada retorna o apontador para o no (inalterado) */
+    return no;
 }
 no_avl* avl_remove(no_avl* no, const char *categStr)
 {
-    /* 1. efetua remocao normal de arvore binaria de pesquisa */
-
-    if (no == NULL)
+   if (no == NULL)
         return no;
+
     /* se a str a ser removida é menor do que a str da raiz,
        entao esta' na sub-arvore esquerda */
     if ( strcmp(categStr, no->categ->categName) < 0 )
@@ -263,10 +334,15 @@ no_avl* avl_remove(no_avl* no, const char *categStr)
             else /* caso de um filho */
             {
                 /* copia os conteudos do filho que não está vazio */
-                avlNoCopia(no,temp);
-				//
+                no->categ->categName = realloc(no->categ->categName, (strlen(temp->categ->categName)+1)*sizeof(char));
+                strcpy(no->categ->categName, temp->categ->categName);
+                no->esquerda = temp->esquerda;
+                no->direita = temp->direita;
+                no->altura = temp->altura;
             }
-            avlNoApaga(temp);
+
+            free(temp->categ->categName);
+            free(temp);
         }
         else
         {
@@ -274,16 +350,18 @@ no_avl* avl_remove(no_avl* no, const char *categStr)
             no_avl* temp = avl_no_valormin(no->direita);
 
             /* copia o valor em.ordem do sucessor para este no' */
-            avlNoValorCopia(no,temp);
+            no->categ->categName = realloc(no->categ->categName, (strlen(temp->categ->categName)+1)*sizeof(char));
+            strcpy(no->categ->categName, temp->categ->categName);
+
             /* apaga o sucessor em-ordem */
             no->direita = avl_remove(no->direita, temp->categ->categName);
         }
     }
-	
+
     /* se a arvore tinha apenas um no, então retorna */
     if (no == NULL)
       return no;
-	
+
     /* 2. atualiza a altura do no corrente */
     no->altura = max(avl_altura(no->esquerda), avl_altura(no->direita)) + 1;
 
@@ -292,6 +370,7 @@ no_avl* avl_remove(no_avl* no, const char *categStr)
     int balance = calc_balanceamento(no);
 
     /* se o no deixou de estar balanceado, existem 4 casos */
+
     if (balance > 1) {
         /* Arvore e' right-heavy */
         if (calc_balanceamento(no->direita) < 0) {
@@ -319,6 +398,7 @@ no_avl* avl_remove(no_avl* no, const char *categStr)
     /* caso esteja balanceada retorna o apontador para o no (inalterado) */
     return no;
 }
+
 no_avl* avl_pesquisa(no_avl *no, const char* categStr)
 {
     if(no == NULL){
@@ -362,16 +442,26 @@ int artigo_adiciona(arvore_avl *avl, elemento_t* elem, char *categName, int capC
     //verificar se a adicao nao passa a capacidade da heap
    
     no_avl* no;
+    //category_t * cat;
     no = avl_pesquisa(no,categName);
+     printf("\ntou aqui eheh");
     if(no==NULL)
     {
-        no->categ = novaCategoria(no->categ->itemTree,categName);
+      
+        printf("\nentrei aqui 2");
+        no_avl* no_novo;
+        printf("\ntou aqui");
+        no_novo->categ = novaCategoria(no_novo->categ->itemTree,categName);
+        no_novo = avl_insere(no_novo,no_novo->categ);
     }
-    if(no->categ->itemTree->tamanho < capCateg){
-        heap_insere(no->categ->itemTree,elem);
-        no = avl_insere(no,no->categ);
-        return 1;
-    }   
+    /*if(cat->itemTree->tamanho < capCateg){
+         printf("\nagora tou aqui");
+       if(heap_insere(cat->itemTree,elem) == 1){
+            printf("\ne agr tou aqui");
+            return 1;
+       }
+     
+    }   */
     //default
     return 0;
 }
