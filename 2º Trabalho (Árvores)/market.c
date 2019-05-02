@@ -1,7 +1,7 @@
-            /*****************************************************************/
-            /*           Market | PROG2 | MIEEC | 2018/19                */
-            /*****************************************************************/
-//****INCLUDES E DEFINES NECESSÁRIOS**************************************//
+/*****************************************************************/
+/*           Market | PROG2 | MIEEC | 2018/19                */
+/*****************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +13,7 @@
 #define FILHO_ESQ(x) 	(x*2)
 #define FILHO_DIR(x) 	(x*2+1)
 
-//**************DECLARACAO DE FUNÇÕES AUXILIARES**********************************//
+//Declaracao funcoes auxiliares//
 int maior_que(elemento_t * e1, elemento_t * e2);
 int avl_altura(no_avl *no);
 int calc_balanceamento(no_avl *N);
@@ -23,7 +23,9 @@ no_avl* avl_no_valormin(no_avl* no);
 no_avl* avl_no_valormax(no_avl* no);
 int max(int a, int b);
 int min(int a, int b);
-
+void avlNoApaga(no_avl* node);
+void avlNoCopia(no_avl* nodeDest, no_avl* nodeSource);
+void avlNoValorCopia(no_avl* nodeDest, no_avl* nodeSrc);
 
 //*****************EXERCICIO 5.1****************************************************//
 
@@ -51,6 +53,7 @@ void elemento_apaga(elemento_t* elem)
 float calcMetrica(elemento_t* elem)
 {
     struct tm tm,tm1;
+    tm.tm_isdst=0;
     time_t t,t1;
     int diff;
     strptime(elem->expirationDate, "%F", &tm);
@@ -113,6 +116,7 @@ int heap_insere(heap *h, elemento_t* elem)
 }
 
 
+
 elemento_t* heap_remove(heap * h)
 {
     elemento_t *maximo = h->elementos[1]; //posicao 1 tem o elemento mais prioritário!!
@@ -129,14 +133,13 @@ void mostraHeap(heap *h)
     if(!h)
         return;
 
-    for(int indice =1; indice<=h->tamanho; indice++)
+    for(int indice =1; indice<=(h->tamanho); indice++)
     {
         printf("%s %s %d %d %f\n",h->elementos[indice]->nameItem, h->elementos[indice]->expirationDate,
                         h->elementos[indice]->qty,h->elementos[indice]->sellRate,
                         h->elementos[indice]->priorityVal);
     }
 }
-
 
 //********************Implementacao criacao categoria nova****************************************//
 
@@ -168,6 +171,9 @@ category_t* novaCategoria(heap* itemTree, char* categName)
 
 void categoriaApaga(category_t* categ)
 {
+    if(categ==NULL)
+        return;
+    
     heap_apaga(categ->itemTree);
     free(categ->categName);
     categ->categName = NULL;
@@ -205,7 +211,8 @@ no_avl* avl_novo_no(category_t* categ)
     no->direita  = NULL;
     no->altura = 0;  /* novo no e' inicialmente uma folha */
     return no;
-    //default
+
+    // Default
     return NULL;
 }
 
@@ -222,16 +229,13 @@ no_avl* avl_insere(no_avl *no, category_t* categ)
          }
     return NULL;
 }
-no_avl* avl_remove(no_avl *no, const char* categStr)
+no_avl* avl_remove(no_avl* no, const char *categStr)
 {
-    // Implementacao exercicio 5.4.4
-
     /* 1. efetua remocao normal de arvore binaria de pesquisa */
 
     if (no == NULL)
         return no;
-
-    /* se o nome da categoria a ser removida é menor do que a str da raiz,
+    /* se a str a ser removida é menor do que a str da raiz,
        entao esta' na sub-arvore esquerda */
     if ( strcmp(categStr, no->categ->categName) < 0 )
         no->esquerda = avl_remove(no->esquerda, categStr);
@@ -259,18 +263,10 @@ no_avl* avl_remove(no_avl *no, const char* categStr)
             else /* caso de um filho */
             {
                 /* copia os conteudos do filho que não está vazio */
-                no->categ->categName = realloc(no->categ->categName, (strlen(temp->categ->categName)+1)*sizeof(char));
-                strcpy(no->categ->categName, temp->categ->categName);
-                heap_apaga(no->categ->itemTree);
-                no->categ->itemTree = temp->categ->itemTree;
-                no->esquerda = temp->esquerda;
-                no->direita = temp->direita;
-                no->altura = temp->altura;
+                avlNoCopia(no,temp);
+				//
             }
-
-            free(temp->categ->categName);
-            free(temp->categ);
-            free(temp);
+            avlNoApaga(temp);
         }
         else
         {
@@ -278,20 +274,16 @@ no_avl* avl_remove(no_avl *no, const char* categStr)
             no_avl* temp = avl_no_valormin(no->direita);
 
             /* copia o valor em.ordem do sucessor para este no' */
-            no->categ->categName = realloc(no->categ->categName, (strlen(temp->categ->categName)+1)*sizeof(char));
-            strcpy(no->categ->categName, temp->categ->categName);
-            heap_apaga(no->categ->itemTree);
-            no->categ->itemTree = temp->categ->itemTree;
-
+            avlNoValorCopia(no,temp);
             /* apaga o sucessor em-ordem */
             no->direita = avl_remove(no->direita, temp->categ->categName);
         }
     }
-
+	
     /* se a arvore tinha apenas um no, então retorna */
     if (no == NULL)
       return no;
-
+	
     /* 2. atualiza a altura do no corrente */
     no->altura = max(avl_altura(no->esquerda), avl_altura(no->direita)) + 1;
 
@@ -300,7 +292,6 @@ no_avl* avl_remove(no_avl *no, const char* categStr)
     int balance = calc_balanceamento(no);
 
     /* se o no deixou de estar balanceado, existem 4 casos */
-
     if (balance > 1) {
         /* Arvore e' right-heavy */
         if (calc_balanceamento(no->direita) < 0) {
@@ -327,16 +318,13 @@ no_avl* avl_remove(no_avl *no, const char* categStr)
     }
     /* caso esteja balanceada retorna o apontador para o no (inalterado) */
     return no;
-
-    // Default
-    return NULL;
 }
-
 no_avl* avl_pesquisa(no_avl *no, const char* categStr)
 {
-    if(no == NULL)
+    if(no == NULL){
+        printf("\nno= NULL!!");
         return NULL;
-
+    } 
     if(strcmp(categStr, no->categ->categName) < 0)
         return avl_pesquisa(no->esquerda,categStr);
 
@@ -344,54 +332,48 @@ no_avl* avl_pesquisa(no_avl *no, const char* categStr)
         return avl_pesquisa(no->direita, categStr);
 
     else
+    {
+        printf("\ntem a categoria!");
         return no;
+    }
 
-    // Default
-    return NULL;
+}
+void avl_apaga_i(no_avl *no)
+{
+	if (!no)
+		return;
+	avl_apaga_i(no->esquerda);
+	avl_apaga_i(no->direita);
+	avlNoApaga(no);
 }
 
 void avl_apaga(arvore_avl* avl)
 {
 	if (!avl) return;
-    while(avl->raiz != NULL)
-    {
-        avl->raiz = avl_remove(avl->raiz, avl->raiz->categ->categName);
-    }
-
+	avl_apaga_i(avl->raiz);
     free(avl);
 }
-
 //******************************ARTIGO_ADICIONA (5.4)************************************//
 int artigo_adiciona(arvore_avl *avl, elemento_t* elem, char *categName, int capCateg)
 {
-    no_avl * no;
-    printf("\naqui");
-    heap* h;
     //procurar categoria na arvore, se nao tiver é preciso adicionar, por outras palavras 
     //se avl_pesquisa()==NULL então avl_insere(); visto
     //adicionar o artigo se nao existir
     //verificar se a adicao nao passa a capacidade da heap
-        avl= avl_nova();
-        no = avl_pesquisa(avl->raiz,categName);
-        if(no==NULL)
-            no= avl_novo_no(no->categ);
-        if(no->categ->itemTree->tamanho>capCateg)
-            return 0;
-        else
-            return 1;
-        
-        
-        
-
    
-
-
-   
-
-
-
-
-    return 1;
+    no_avl* no;
+    no = avl_pesquisa(no,categName);
+    if(no==NULL)
+    {
+        no->categ = novaCategoria(no->categ->itemTree,categName);
+    }
+    if(no->categ->itemTree->tamanho < capCateg){
+        heap_insere(no->categ->itemTree,elem);
+        no = avl_insere(no,no->categ);
+        return 1;
+    }   
+    //default
+    return 0;
 }
 
 
@@ -493,4 +475,76 @@ int max(int a, int b)
 int min(int a, int b)
 {
     return (a < b)? a : b;
+}
+
+int enoughItems(heap* h, int numPorItem, int totalItems)
+{
+    int qtyCounter = 0;
+    for (int i=1; i<=(h->tamanho); i++)
+    {
+        qtyCounter += min(h->elementos[i]->qty,numPorItem);
+        if(qtyCounter>=totalItems)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void avlNoApaga(no_avl* node)
+{
+
+    if(!node)
+        return;
+
+    categoriaApaga(node->categ);
+    node->esquerda = NULL;
+    node->direita = NULL;
+    node->altura = 0;
+    free(node);
+    node = NULL;
+}
+
+void avlNoCopia(no_avl* nodeDest, no_avl* nodeSrc)
+{
+
+    if(!nodeSrc || !nodeDest)
+        return;
+
+    nodeDest->categ->categName = realloc(nodeDest->categ->categName, (strlen(nodeSrc->categ->categName)+1)*sizeof(char));
+    strcpy(nodeDest->categ->categName, nodeSrc->categ->categName);
+    heap_apaga(nodeDest->categ->itemTree);
+    nodeDest->categ->itemTree = heap_nova(nodeSrc->categ->itemTree->capacidade);
+
+    for(int i=RAIZ; i<=(nodeSrc->categ->itemTree->tamanho); i++)
+    {
+        nodeDest->categ->itemTree->elementos[i] = elemento_novo(nodeSrc->categ->itemTree->elementos[i]->nameItem,
+        nodeSrc->categ->itemTree->elementos[i]->expirationDate,nodeSrc->categ->itemTree->elementos[i]->qty,
+        nodeSrc->categ->itemTree->elementos[i]->sellRate);
+    }
+	nodeDest->categ->itemTree->tamanho = nodeSrc->categ->itemTree->tamanho;
+    nodeDest->esquerda = nodeSrc->esquerda;
+    nodeDest->direita = nodeSrc->direita;
+    nodeDest->altura = nodeSrc->altura;
+
+}
+
+void avlNoValorCopia(no_avl* nodeDest, no_avl* nodeSrc)
+{
+
+    if(!nodeSrc || !nodeDest)
+        return;
+
+    nodeDest->categ->categName = realloc(nodeDest->categ->categName, (strlen(nodeSrc->categ->categName)+1)*sizeof(char));
+    strcpy(nodeDest->categ->categName, nodeSrc->categ->categName);
+    heap_apaga(nodeDest->categ->itemTree);
+    nodeDest->categ->itemTree = heap_nova(nodeSrc->categ->itemTree->capacidade);
+
+    for(int i=RAIZ; i<=(nodeSrc->categ->itemTree->tamanho); i++)
+    {
+        nodeDest->categ->itemTree->elementos[i] = elemento_novo(nodeSrc->categ->itemTree->elementos[i]->nameItem,
+        nodeSrc->categ->itemTree->elementos[i]->expirationDate,nodeSrc->categ->itemTree->elementos[i]->qty,
+        nodeSrc->categ->itemTree->elementos[i]->sellRate);
+    }
+	nodeDest->categ->itemTree->tamanho = nodeSrc->categ->itemTree->tamanho;
 }
