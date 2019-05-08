@@ -404,6 +404,7 @@ int teste_artigo_adiciona_e_criar_montra(const char* file_name)
         }
     }
     fclose(f);
+
     char categMontra[MAX_CATEGNAME_LEN] = "frescos";
     int numPorItemMontra = 5;
     int totalItensMontra = 10;

@@ -112,8 +112,6 @@ int heap_insere(heap *h, elemento_t* elem)
 	}
 	return 1;
 
-    //Default
-    return 0;
 }
 
 
@@ -154,7 +152,6 @@ elemento_t* heap_remove(heap * h)
     }
 
     if(maximo==NULL){
-        printf("\nelemento null!");
       return NULL;
     }
     else
@@ -193,7 +190,6 @@ category_t* novaCategoria(heap* itemTree, char* categName)
 
     if(retCat->categName==NULL)
     {
-        printf("\ncateg name null!");
         return NULL;
     }
 
@@ -232,15 +228,11 @@ arvore_avl* avl_nova()
 no_avl* avl_novo_no(category_t* categ)
 {
     // Implementacao exercicio 5.4.2
-    printf("\nentraste aqui??\n");
     no_avl *no = (no_avl*) malloc(sizeof(no_avl));
     if(no == NULL){
-        printf("\nnull!!!!!!!!");
         return NULL;
     }  
-    printf("\ne aqui??ando\n");
     no->categ = categ;
-    printf("no categ-> name= %s",no->categ->categName);
     no->esquerda = NULL;
     no->direita  = NULL;
     no->altura = 0;  /* novo no e' inicialmente uma folha */
@@ -250,28 +242,18 @@ no_avl* avl_novo_no(category_t* categ)
 
 no_avl* avl_insere(no_avl *no, category_t* categ)
 {
-    printf("\nhere");
-
     if (no == NULL){
-        printf("\n\n\n11111111111111111vou ao novo no!!");
         return avl_novo_no(categ);
     }
-    
-
-    printf("\nandas aqui?\n");  
-    printf("\ncategname= %s",categ->categName);
-    printf("\nno categname= %s",no->categ->categName);     
     if (strcmp(categ->categName, no->categ->categName) < 0)
         no->esquerda  = avl_insere(no, categ);
     else if(strcmp(categ->categName, no->categ->categName) > 0)
         no->direita = avl_insere(no, categ);
     else {
-        printf("\nandAS AQUI CRL??");
         return no;
          }
-    printf("\n\ntou aqui!");
     /* 2. atualiza a altura deste no ancestral */
-   /* no->altura = max(avl_altura(no->esquerda), avl_altura(no->direita)) + 1;
+    no->altura = max(avl_altura(no->esquerda), avl_altura(no->direita)) + 1;
 
     /* 3. calcula o fator de balanceamento deste no ancestral para verificar
        se deixou de estar balanceado */
@@ -305,7 +287,6 @@ no_avl* avl_insere(no_avl *no, category_t* categ)
     }
     /* caso esteja balanceada retorna o apontador para o no (inalterado) */
     return no;
-    return NULL;
 }
 no_avl* avl_remove(no_avl* no, const char *categStr)
 {
@@ -418,7 +399,6 @@ no_avl* avl_pesquisa(no_avl *no, const char* categStr)
 
     else
     {
-        printf("\ntem a categoria!");
         return no;
     }
 
@@ -441,35 +421,39 @@ void avl_apaga(arvore_avl* avl)
 //******************************ARTIGO_ADICIONA (5.4)************************************//
 int artigo_adiciona(arvore_avl *avl, elemento_t* elem, char *categName, int capCateg)
 {
-    //procurar categoria na arvore, se nao tiver é preciso adicionar, por outras palavras 
-    //se avl_pesquisa()==NULL então avl_insere(); visto
-    //adicionar o artigo se nao existirm
-    //verificar se a adicao nao passa a capacidade da heap
-    printf("\nartigo_adiciona()");
-    no_avl* no;
-    no_avl * new;
-    heap * h;
-    no = avl_pesquisa(avl->raiz,categName);
-    char insere= 1;
-    category_t * categ;
-    if(no == NULL){  
-        h = heap_nova(capCateg);
-        categ = novaCategoria(h,categName);
-        new= avl_insere(avl->raiz,categ);
-        for(int i=0;i<h->tamanho;i++){
-            
-            if(h->elementos[i] == elem && h->tamanho < capCateg-1)
-               insere=0;
-        }
-        if(insere==1){
-              heap_insere(new->categ->itemTree,elem);
-            return 1;
-        }
-        else
-            return 0;
+    no_avl *no;
+    
+    if(avl->raiz == NULL)
+    {
+        heap *h1 = heap_nova(capCateg);
+        int sucesso= heap_insere(h1,elem);
+        category_t *cat =  novaCategoria(h1, categName);
+        avl->raiz = avl_insere(avl->raiz, cat);
     }
-    else
-        return 0;
+    no = avl_pesquisa(avl->raiz,categName);
+    if(no== NULL)
+    {  
+        //nao existe a categoria
+        heap *h2= heap_nova(capCateg);
+        category_t *categ = novaCategoria(h2,categName);
+        avl->raiz= avl_novo_no(categ);
+        heap_insere(h2,elem);
+        avl->raiz= avl_insere(avl->raiz,categ);
+            return 1;       
+    }
+    else{
+        //existe a categoria
+        int aux= no->categ->itemTree->tamanho; 
+        if(aux < no->categ->itemTree->capacidade){
+            heap_insere(no->categ->itemTree,elem);
+            no->categ->itemTree->tamanho++;
+            no = avl_insere(no,no->categ);
+            return 1;
+        }  
+        else{
+             return 0;
+        }
+    }
 }
 
 
