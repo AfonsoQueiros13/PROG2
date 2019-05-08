@@ -450,19 +450,19 @@ int artigo_adiciona(arvore_avl *avl, elemento_t* elem, char *categName, int capC
     no_avl * new;
     heap * h;
     no = avl_pesquisa(avl->raiz,categName);
-    char insere= 0;
-    if(no == NULL){
-        printf("\n o no e null...");
-        printf("\n\ncategnam= %s",categName);
-      
+    char insere= 1;
+    category_t * categ;
+    if(no == NULL){  
         h = heap_nova(capCateg);
-        new->categ = novaCategoria(h,categName);
+        categ = novaCategoria(h,categName);
+        new= avl_insere(avl->raiz,categ);
         for(int i=0;i<h->tamanho;i++){
+            
             if(h->elementos[i] == elem && h->tamanho < capCateg-1)
-               insere=1;
+               insere=0;
         }
         if(insere==1){
-            heap_insere(new->categ->itemTree,elem);
+              heap_insere(new->categ->itemTree,elem);
             return 1;
         }
         else
