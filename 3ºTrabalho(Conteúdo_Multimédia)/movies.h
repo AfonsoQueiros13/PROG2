@@ -26,10 +26,10 @@ typedef struct
  * 	clien é um apontador para estrutura cliente com os dados do cliente guardado
  * 	proximo é um apontador para o próximo cliente (implementação baseada em lista ligada)
  */
-typedef struct elem
+typedef struct elem_cliente
 {
 	cliente* clien;
-	struct elem* proximo;
+	struct elem_cliente* proximo;
 } elementoCliente;
 
 /**
@@ -53,11 +53,22 @@ typedef struct
 	float rating;
 } filme;
 
+/** Elemento da tabela de dispersao (colecaoClientes):
+ * 	clien é um apontador para estrutura cliente com os dados do cliente guardado
+ * 	proximo é um apontador para o próximo cliente (implementação baseada em lista ligada)
+ */
+typedef struct elem_filme
+{
+	filme* film;
+	struct elem_filme* proximo;
+} elementoFilme;
+
 /** Estrutura colecaoFilmes deverá ser completada de forma a ser possivel guardar os filmes em memoria
  * */
 typedef struct 
 {
-	//Completar com a(s) estrutura(s) desejada(s)
+	elementoFilme **elementos;	/* vetor de elementos */
+	int tamanho;			/* tamanho do vetor de elementos */
 } colecaoFilmes;
 
 

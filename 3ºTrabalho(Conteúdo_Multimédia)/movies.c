@@ -36,6 +36,27 @@ colecaoClientes* colecaoClientesNova(int tamanho)
     return t;
 }
 
+/////   Implementacao Tabela de Dispersão - Clientes  ///////
+colecaoFilmes* colecaoFilmesNova(int tamanho)
+{
+    /* aloca memoria para a estrutura tabela_dispersao */
+
+    colecaoFilmes *t = (colecaoFilmes*) malloc(sizeof (colecaoFilmes));
+    if (t == NULL)
+        return NULL;
+
+    /* aloca memoria para os elementos */
+    t->elementos = (elementoFilmes **) calloc(tamanho, sizeof (elementoFilmes*));
+    if (t->elementos == NULL) {
+        free(t);
+        return NULL;
+    }
+
+    t->tamanho = tamanho;
+
+    return t;
+}
+
 void colecaoClientesApaga(colecaoClientes *td)
 {
     int i;
@@ -180,7 +201,7 @@ void mostraTabela(colecaoClientes *td)
 /* inserir um Novo Filme*/
 int inserirNovoFilme(colecaoFilmes* colecFilmes, char* titulo, char* categoria, int filmId, float rating)
 {
-    // resolução do exercicio 2
+    elementoFilme * elemfilme;
 	return -1;
 }
 
@@ -201,10 +222,10 @@ int removerFilme(colecaoFilmes* colecFilmes, colecaoClientes *td, int nFilme)
 }
 
 // Remover a estrutura colecaoFilmes
-void colecaoFilmesApaga(colecaoFilmes* colecFilmes, , colecaoClientes *td)
+void colecaoFilmesApaga(colecaoFilmes* colecFilmes,colecaoClientes *td)
 {
     // resolução do exercicio 8
- 
+
 }
 
 //Sugestões //////////////////////////////
