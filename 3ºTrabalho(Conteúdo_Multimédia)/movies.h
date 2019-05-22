@@ -80,6 +80,13 @@ typedef struct
 colecaoClientes* colecaoClientesNova(int tamanho);
 
 /**
+ * Cria uma colecaoFilmes (tabela de dispersao)
+ * parametros: tamanho da tabela de dispersao
+ * retorno: uma tabela de dispersao vazia que representa a colecaoFilmes
+ */
+colecaoFilmes* colecaoFilmesNova(int tamanho);
+
+/**
  * Apaga uma colecaoClientes (tabela de dispersao)
  * parametros: apontador para colecaoClientes a apagar
  */

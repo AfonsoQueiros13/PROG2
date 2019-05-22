@@ -7,7 +7,7 @@
 #include <string.h>
 #include <math.h>
 #include "movies.h"
-
+#define MAXCHAR 100
 
 
 //Declaracao funcoes auxiliares//
@@ -46,7 +46,7 @@ colecaoFilmes* colecaoFilmesNova(int tamanho)
         return NULL;
 
     /* aloca memoria para os elementos */
-    t->elementos = (elementoFilmes **) calloc(tamanho, sizeof (elementoFilmes*));
+    t->elementos = (elementoFilme**) calloc(tamanho, sizeof (elementoFilme));
     if (t->elementos == NULL) {
         free(t);
         return NULL;
@@ -201,16 +201,76 @@ void mostraTabela(colecaoClientes *td)
 /* inserir um Novo Filme*/
 int inserirNovoFilme(colecaoFilmes* colecFilmes, char* titulo, char* categoria, int filmId, float rating)
 {
-    elementoFilme * elemfilme;
-	return -1;
+    int i;
+    if(!colecFilmes)
+        return -1;
+    elementoFilme* elem;
+     if (elem == NULL)
+    {
+        /* novo elemento, chave nao existe na lista */
+
+        /* aloca memoria para o elemento */
+        elem = (elementoFilme*) malloc(sizeof (elementoFilme));
+        if (elem == NULL)
+            return -1;
+
+        /* aloca memoria para o valoreto */
+        elem->film = (filme*) malloc(sizeof (filme));
+        if (elem->film == NULL)
+            return -1;
+    }
+        /*copia chave e valor */
+        strcpy(elem->film->titulo,titulo);
+        //strcpy(elem->obj->valor, valor);
+
+    //strcpy(colecFilmes->elementos[0]->film->titulo,titulo);
+   // printf("\nehehe =  %s",colecFilmes->elementos[0]->film->titulo);
+   /* for(int i = 0;i < colecFilmes->tamanho;i++){
+        
+        if(strcmp(colecFilmes->elementos[i]->film->titulo,titulo)==0
+        ||colecFilmes->elementos[i]->film->filmId == filmId) //os filmes ñ podem ter mesmo id e nome
+            return 0;
+    } */
+  // strcpy(colecFilmes->elementos[colecFilmes->tamanho]->film->titulo,titulo);
+   // strcpy(colecFilmes->elementos[colecFilmes->tamanho]->film->categoria,categoria);
+   // colecFilmes->elementos[colecFilmes->tamanho]->film->filmId = filmId;
+  // colecFilmes->elementos[colecFilmes->tamanho]->film->rating = rating;
+   colecFilmes->tamanho++;
+    //return 1;//sucesso*/
+    return 1;
+
 }
 
 colecaoFilmes* filmesCarrega(const char *nomeFicheiro)
 {
-   // resolução do exercicio 3
-   return NULL;
+    int resultado;
+    FILE *fp;
+    char str[MAXCHAR];
+    char ch;
+    int tamanho_colecao=0;
+    char *filename = "filmesShort.txt";
+    char titulo[100];
+    char categoria[20];
+    char filmId[3];
+    float rating;
 
+    fp = fopen(filename , "r");
+    if (fp == NULL){
+        printf("Could not open file %s",filename);
+        return NULL; //erro
+    }
 
+    //fclose(fp);
+    fp = fopen(filename , "r");
+    colecaoFilmes * colecao = colecaoFilmesNova(tamanho_colecao);
+    printf(" TAM = %d",tamanho_colecao);
+    while(!feof(fp)){
+        fscanf(fp,"%100[^|\t]|%20[^|\t]|%3[^|]|%f",titulo,categoria,filmId,&rating);
+        printf("\n%s|",titulo);printf("%s|",categoria);printf("%d|",atoi(filmId));printf("%f\n",rating);
+        inserirNovoFilme(colecao,titulo,categoria,atoi(filmId),rating);
+    }
+    fclose(fp);
+    return colecao;
 }
 
 
