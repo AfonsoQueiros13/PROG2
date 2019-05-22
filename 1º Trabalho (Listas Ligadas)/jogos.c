@@ -252,7 +252,42 @@ void quicksort_golos(vetor_equipas *v, equipa *equipa1){
        equipa1->diff_golos = diferenca[i];
        strcpy(equipa1->nome_equipa, nome_equipa[i]);
        vetor_equipas_atribui(v, i, *equipa1); 
+    }void quickSort(vetor_equipas *v, equipa *equipa1, char items[][20],int *diferenca, int left, int right)
+{
+  int i, j;
+  char *x;
+  char temp[20];
+  int aux;
+  i = left;
+  j = right;
+  x = items[(left+right)/2];
+
+  do {
+    while((strcmp(items[i],x) < 0) && (i < right)) {
+       i++;
     }
+    while((strcmp(items[j],x) > 0) && (j > left)) {
+        j--;
+    }
+    if(i <= j) {
+      aux =  diferenca[i];
+      strcpy(temp, items[i]);
+      diferenca[i] = diferenca[j];
+      strcpy(items[i], items[j]);
+      diferenca[j] = aux;
+      strcpy(items[j], temp);
+      i++;
+      j--;
+   }
+  } while(i <= j);
+
+  if(left < j) {
+     quickSort(v,equipa1,items,diferenca, left, j);
+  }
+  if(i < right) {
+     quickSort(v,equipa1,items,diferenca, i, right);
+  }
+}
     
 }
 
