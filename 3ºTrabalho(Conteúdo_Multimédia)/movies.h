@@ -71,6 +71,13 @@ typedef struct
 	int tamanho;			/* tamanho do vetor de elementos */
 } colecaoFilmes;
 
+/**
+ * Cria um cliente novo
+ * parametros: username e id dos filmes que já viu
+ * retorno: cliente
+ */
+elementoCliente* clienteNovo(const char *username,int id);
+
 
 /**
  * Cria uma colecaoClientes (tabela de dispersao)

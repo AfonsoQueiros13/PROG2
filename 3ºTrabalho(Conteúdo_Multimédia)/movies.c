@@ -12,10 +12,24 @@
 
 //Declaracao funcoes auxiliares//
 
+/////   Implementacao ClienteNovo  ///////
+elementoCliente* clienteNovo(const char *username,int id){
+
+    elementoCliente * cli = (elementoCliente*)malloc(sizeof (elementoCliente));
+    cli->clien = (cliente*)malloc(sizeof(cliente));
+    
+    cli->clien->username = (char*)malloc(sizeof(char));
+    strcpy(cli->clien->username,username);
+    
+    cli->clien->vistos = (vetor*)malloc(sizeof (vetor));
+    vetor_insere(cli->clien->vistos,id,-1);
+    return cli;
+    
+}
 
 
 
-//////   Implementacao Tabela de Dispersão - Clientes  ///////
+//////   Implementacao Tabela de Dispersão - Filmes  ///////
 colecaoClientes* colecaoClientesNova(int tamanho)
 {
     /* aloca memoria para a estrutura tabela_dispersao */
@@ -89,8 +103,46 @@ void colecaoClientesApaga(colecaoClientes *td)
 
 int clienteAdiciona(colecaoClientes *td, const char *username, unsigned int filmId)
 {
-   // Resolução do exercicio 4
-   return -1;
+    //por alguma razao adiciona um id =0, falts resolver isto
+    char insere = 1;
+    long  index;
+    elementoCliente * elem;
+    if (!td) return -1;
+
+    /* calcula hash para a string a adicionar */
+    index = hash_cliente(username, td->tamanho);
+    /* verifica se chave ja' existe na lista */
+    elem = td->elementos[index];
+    if(elem!=NULL)
+        printf("\nelem = %s",elem->clien->username);
+    while (elem != NULL && strcmp(elem->clien->username, username) != 0){
+        elem = elem->proximo;
+    }
+        
+
+    if (elem == NULL) //vai-se criar novo cliente
+    {
+        elem = (elementoCliente*) malloc(sizeof (elementoCliente));
+        /*copia id e nome */
+        elem = clienteNovo(username,filmId);
+        /* insere no inicio da lista */
+        elem->proximo = td->elementos[index];
+        td->elementos[index] = elem;
+    } else { //existe o cliente com o ID passado por parametro
+        printf("\nexiste já este cliente!!");
+        for(int i = 0 ; i < elem->clien->vistos->tamanho;i++){
+            printf("\ntamanho vetor = %d ",elem->clien->vistos->tamanho);
+            printf("\nelem->clien->vistos->elementos[%d] = %d e id = %d",i,elem->clien->vistos->elementos[i],filmId);
+            if(elem->clien->vistos->elementos[i] == filmId){
+                printf("\nreturn!!");
+                return 0;
+            }
+        }
+        printf("\nentrei! id = %d",elem->clien->vistos->elementos[elem->clien->vistos->tamanho]);
+        vetor_insere(elem->clien->vistos,filmId,-1);
+        return 1;  
+    }
+
 }
 
 int clienteRemove(colecaoClientes *td, const char *username)
@@ -132,14 +184,39 @@ int clienteRemove(colecaoClientes *td, const char *username)
 
 int colecaoNumClientes(colecaoClientes *td)
 {
-	// resolução do exercicio 5
-    return -1;
+    //funcao feita!
+    int i, count = 0;
+    elementoCliente * elem;
+
+    if (!td) return -1;
+
+    /* percorre todos os elementos da tabela */
+    for (i = 0; i < td->tamanho; i++)
+    {
+        elem = td->elementos[i];
+        while(elem != NULL)
+        {
+            elem = elem->proximo;
+            count++;
+        }
+    }
+    return count;
 }
 
 int clienteExiste(colecaoClientes *td, const char *username)
 {
-    // resolução do exercicio 6
-	return -1;
+    elementoCliente* elem;
+    long index = hash_cliente(username, td->tamanho);
+    /* verifica se chave ja' existe na lista */
+    elem = td->elementos[index];
+    if(elem!=NULL)
+        printf("\nelem = %s",elem->clien->username);
+    while (elem != NULL ){
+        if(strcmp(elem->clien->username, username) == 0)
+            return 1;
+        elem = elem->proximo;
+    }  
+    return 0;
 
 }
 
@@ -152,6 +229,17 @@ unsigned long hash_cliente(const char* username, int tamanho)
     {
         hash += (int) username[c]*powf(2,c);
     }
+
+    return hash % tamanho;
+
+}
+
+unsigned long hash_filme(int id, int tamanho)
+{
+    
+    unsigned long hash = 7;
+
+    hash += (int) id*powf(2,id);
 
     return hash % tamanho;
 
@@ -201,44 +289,7 @@ void mostraTabela(colecaoClientes *td)
 /* inserir um Novo Filme*/
 int inserirNovoFilme(colecaoFilmes* colecFilmes, char* titulo, char* categoria, int filmId, float rating)
 {
-    int i;
-    if(!colecFilmes)
-        return -1;
-    elementoFilme* elem;
-     if (elem == NULL)
-    {
-        /* novo elemento, chave nao existe na lista */
-
-        /* aloca memoria para o elemento */
-        elem = (elementoFilme*) malloc(sizeof (elementoFilme));
-        if (elem == NULL)
-            return -1;
-
-        /* aloca memoria para o valoreto */
-        elem->film = (filme*) malloc(sizeof (filme));
-        if (elem->film == NULL)
-            return -1;
-    }
-        /*copia chave e valor */
-        strcpy(elem->film->titulo,titulo);
-        //strcpy(elem->obj->valor, valor);
-
-    //strcpy(colecFilmes->elementos[0]->film->titulo,titulo);
-   // printf("\nehehe =  %s",colecFilmes->elementos[0]->film->titulo);
-   /* for(int i = 0;i < colecFilmes->tamanho;i++){
-        
-        if(strcmp(colecFilmes->elementos[i]->film->titulo,titulo)==0
-        ||colecFilmes->elementos[i]->film->filmId == filmId) //os filmes ñ podem ter mesmo id e nome
-            return 0;
-    } */
-  // strcpy(colecFilmes->elementos[colecFilmes->tamanho]->film->titulo,titulo);
-   // strcpy(colecFilmes->elementos[colecFilmes->tamanho]->film->categoria,categoria);
-   // colecFilmes->elementos[colecFilmes->tamanho]->film->filmId = filmId;
-  // colecFilmes->elementos[colecFilmes->tamanho]->film->rating = rating;
-   colecFilmes->tamanho++;
-    //return 1;//sucesso*/
-    return 1;
-
+    return 0;
 }
 
 colecaoFilmes* filmesCarrega(const char *nomeFicheiro)
@@ -259,15 +310,12 @@ colecaoFilmes* filmesCarrega(const char *nomeFicheiro)
         printf("Could not open file %s",filename);
         return NULL; //erro
     }
-
-    //fclose(fp);
-    fp = fopen(filename , "r");
-    colecaoFilmes * colecao = colecaoFilmesNova(tamanho_colecao);
-    printf(" TAM = %d",tamanho_colecao);
+   
+    colecaoFilmes * colecao = colecaoFilmesNova(200);
     while(!feof(fp)){
         fscanf(fp,"%100[^|\t]|%20[^|\t]|%3[^|]|%f",titulo,categoria,filmId,&rating);
-        printf("\n%s|",titulo);printf("%s|",categoria);printf("%d|",atoi(filmId));printf("%f\n",rating);
-        inserirNovoFilme(colecao,titulo,categoria,atoi(filmId),rating);
+        //printf("\n%s|",titulo);printf("%s|",categoria);printf("%d|",atoi(filmId));printf("%f\n",rating);
+        //inserirNovoFilme(colecao,titulo,categoria,atoi(filmId),rating);
     }
     fclose(fp);
     return colecao;
@@ -277,14 +325,126 @@ colecaoFilmes* filmesCarrega(const char *nomeFicheiro)
 // Remover um filme///
 int removerFilme(colecaoFilmes* colecFilmes, colecaoClientes *td, int nFilme)
 {
-    // resolução do exercicio 7
-   return -1;
+    int index;
+    elementoFilme * elem, * aux;
+
+    if (!td) return -1;
+
+    /* calcula hash para a string a remover */
+    index = hash_filme(nFilme,colecFilmes->tamanho);
+
+    elem = colecFilmes->elementos[index];
+    aux = NULL;
+
+    /* para cada elemento na posicao index */
+    while(elem != NULL)
+    {
+        printf("aaaaa");
+        /* se for a string que se procura, e' removida */
+        if (elem->film->filmId == nFilme)
+        {
+            printf("\nentrou aqui ! elem->film->filmId = %d ",elem->film->filmId);
+            /* se nao for a primeira da lista */
+            if (aux != NULL)
+                aux->proximo = elem->proximo;
+            else
+                colecFilmes->elementos[index] = elem->proximo;
+            free(elem->film);
+            free(elem);
+
+            return 1;
+        }
+
+        aux = elem;
+        elem = elem->proximo;
+    }
+    //remover da colecaoClientes o id
+    elementoCliente * elem1, * aux1;
+
+    if (!td) return -1;
+
+    /* calcula hash para a string a remover */
+    index = hash_cliente(elem1->clien->username, td->tamanho);
+
+    elem1 = td->elementos[index];
+    aux = NULL;
+    int inc =0;
+    /* para cada elemento na posicao index */
+    while(elem1 != NULL)
+    {
+        /* se for a string que se procura, e' removida */
+        if (elem1->clien->vistos->elementos[inc++] == nFilme)
+        {
+            /* se nao for a primeira da lista */
+            if (aux1 != NULL)
+                aux1->proximo = elem1->proximo;
+            else
+                td->elementos[index] = elem1->proximo;
+            free(elem1->clien->vistos->elementos);
+            free(elem1);
+
+            return 1;
+        }
+
+        aux1 = elem1;
+        elem1 = elem1->proximo;
+    }
+
+    return 0;
 }
 
 // Remover a estrutura colecaoFilmes
 void colecaoFilmesApaga(colecaoFilmes* colecFilmes,colecaoClientes *td)
 {
-    // resolução do exercicio 8
+    int i;
+    elementoFilme *elem, *aux;
+    elementoCliente *elem1, *aux1;
+
+    if (td == NULL || colecFilmes == NULL )  return ;
+
+    /* para cada entrada na tabela */
+    for (i = 0; i < td->tamanho; i++)
+    {
+        /* e enquanto existirem elementos nessa entrada */
+        elem1 = td->elementos[i];
+        while (elem1 != NULL)
+        {
+            /* liberta cada elemento */
+            aux1 = elem1->proximo;
+            vetor_apaga(elem1->clien->vistos);
+            free(elem1->clien->username);
+            elem1->clien->username=NULL;
+            free(elem1->clien);
+            free(elem1);
+            elem1 = aux1;
+        }
+    }
+
+    /* liberta vector e estrutura */
+    free(td->elementos);
+    free(td);
+    //remover colecao filmes
+    /* para cada entrada na tabela */
+    for (i = 0; i < colecFilmes->tamanho; i++)
+    {
+        /* e enquanto existirem elementos nessa entrada */
+        elem = colecFilmes->elementos[i];
+        while (elem != NULL)
+        {
+            /* liberta cada elemento */
+            aux = elem->proximo;
+            free(elem->film->categoria);
+            free(elem->film->titulo);
+            elem->film->filmId =0;
+            elem->film->rating = 0.0;
+            free(elem);
+            elem = aux;
+        }
+    }
+
+    /* liberta vector e estrutura */
+    free(colecFilmes->elementos);
+    free(colecFilmes);
 
 }
 
