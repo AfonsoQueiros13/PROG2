@@ -137,8 +137,6 @@ int clienteAdiciona(colecaoClientes *td, const char *username, unsigned int film
 
 }
 
-
-
 /******************************** FUNCAO 2 FEITA!!****************************************************/
 int colecaoNumClientes(colecaoClientes *td)
 {
