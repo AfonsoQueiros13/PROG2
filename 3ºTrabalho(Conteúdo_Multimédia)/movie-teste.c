@@ -22,7 +22,10 @@
 
 // Mostrar o vetor de Sugestoes
 void mostrar_vetorsugestoes(vetor *vec)
+
 {
+    if (!vec)
+	return;
     int l;
     printf("[");
     for ( l=0;l<vec->tamanho-1;l++)
@@ -69,6 +72,7 @@ void clientesCarrega(colecaoClientes* td,const char *nomeFicheiro)
         rel=clienteAdiciona(td, username, filmIdvisto);
       }
     }
+	fclose(f);
 }
 
 
@@ -99,12 +103,73 @@ int main(int argc, char** argv)
   } else {
     printf("\tERRO: clienteExiste: retorno incorreto para cliente 'KB6OC0HI' (!=1)\n");
   }
+  int a_cli=clienteAdiciona(clientes, "abcde", 0);
+      n_cli=colecaoNumClientes(clientes);
+  if (a_cli==1 && n_cli==11) {
+	printf("\tclienteAdiciona: retorno ok para adicionar o novo cliente 'abcde' e numero  de clientes correto (1 - 11)\n");
+  } else if (a_cli==1) {
+    printf("\tERRO: clienteAdiciona:retorno ok para adicionar o novo cliente 'abcde' e numero  de clientes incorreto  (1 - retornado %d, esperado %d)\n",n_cli,11); 
+   } else if (n_cli==11) {
+    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes correto  (retornado %d, esperado %d )\n",a_cli,1);
+} else {
+    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes incorreto  (retornado %d, esperado %d - retornado %d, esperado %d)\n",a_cli,1,n_cli,11); 
+}
+     a_cli=clienteAdiciona(clientes, "Jh", 60);
+     n_cli=colecaoNumClientes(clientes);
+  if (a_cli==0 && n_cli==11) {
 
+    printf("\tclienteAdiciona: retorno ok para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes correto (0 - 11)\n");
+  } else if (a_cli==0) {
+    printf("\tERRO: clienteAdiciona:retorno ok para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes incorreto  (0 - retornado %d, esperado %d)\n",n_cli,10); 
+  } else if (n_cli==11) {
+    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes correto  (retornado %d, esperado %d - 11)\n",a_cli,0);
+} else  {
+    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes incorreto  (retornado %d, esperado %d - retornado %d, esperado %d)\n",a_cli,0,n_cli,11); 
+} 
 
-  // Testar a sugestão
-  printf("\nSITUACAO INICIAL\n");
+  // Testar a sugestão 1 - Sugestões da mesma categira
+  printf("\nSITUACAO 1 - SUGESTÔES DA MESMA CATEGORIA\n");
   vetor *vec,*vref;
   vref=vetor_novo();
+  vetor_insere(vref,18,-1); vetor_insere(vref,65,-1); vetor_insere(vref,71,-1); vetor_insere(vref,82,-1); vetor_insere(vref,36,-1);
+  start_t = clock();
+  vec=sugestoes(filmes, clientes, "lultzI", 5, 8.0);
+  end_t = clock();
+  printf("\tTempo de um pedido de sugestoes: %.6f\n", (double)(end_t - start_t) / CLOCKS_PER_SEC);
+  printf("\tSugerido: ");
+  mostrar_vetorsugestoes(vec);
+  printf("\tEsperado: ");
+  mostrar_vetorsugestoes(vref);
+  if (comparar_vetorsugestoes(vref,vec)==1) {
+    printf("\tSugestoes corretas para situacao inicial\n");
+  } else {
+    printf("\tERRO: Sugestoes incorretas para situacao inicial\n");
+  }
+  vetor_apaga(vec);
+
+  // Testar a sugestão 2 Cliente tem cateogias empatadas e filmes têm rating empatados
+  printf("\nSITUACAO 2: CLIENTE TEM CATEGORIAS EMPATADAS E FILMES TÊM RATING EMPATADOS \n");
+  vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);
+  vetor_insere(vref,10,-1); vetor_insere(vref,57,-1); vetor_insere(vref,39,-1); vetor_insere(vref,20,-1); vetor_insere(vref,13,-1);
+  start_t = clock();
+  vec=sugestoes(filmes, clientes, "H", 5, 9.5);
+  end_t = clock();
+  printf("\tTempo de um pedido de sugestoes: %.6f\n", (double)(end_t - start_t) / CLOCKS_PER_SEC);
+  printf("\tSugerido: ");
+  mostrar_vetorsugestoes(vec);
+  printf("\tEsperado: ");
+  mostrar_vetorsugestoes(vref);
+  if (comparar_vetorsugestoes(vref,vec)==1) {
+    printf("\tSugestoes corretas para situacao inicial\n");
+  } else {
+    printf("\tERRO: Sugestoes incorretas para situacao inicial\n");
+  }
+  vetor_apaga(vec);
+
+
+// Testar a sugestão 3 Cliente tem cateogias empatadas e filmes têm rating empatados e o limiar obriga a mudar de categoria
+  printf("\nSITUACAO 3- LIMIAR OBRIGA A MUDAR DE CATEGORIA \n");
+  vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);
   vetor_insere(vref,14,-1); vetor_insere(vref,57,-1); vetor_insere(vref,39,-1); vetor_insere(vref,20,-1); vetor_insere(vref,13,-1);
   start_t = clock();
   vec=sugestoes(filmes, clientes, "J9IFuAEe", 5, 9.5);
@@ -160,10 +225,11 @@ int main(int argc, char** argv)
   vetor_apaga(vec);
 
   vetor_apaga(vref);
-  printf("ok");
+  
   colecaoFilmesApaga(filmes,clientes);
-  printf("ok");
+  
   colecaoClientesApaga(clientes);
-  printf("ok");
+ 
   return 0;
 }
+
