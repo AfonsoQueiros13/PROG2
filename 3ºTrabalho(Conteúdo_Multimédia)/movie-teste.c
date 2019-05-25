@@ -122,7 +122,7 @@ int main(int argc, char** argv)
   } else if (a_cli==0) {
     printf("\tERRO: clienteAdiciona:retorno ok para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes incorreto  (0 - retornado %d, esperado %d)\n",n_cli,10); 
   } else if (n_cli==11) {
-    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes correto  (retornado %d, esperado %d - 11)\n",a_cli,0);
+    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes correto  (retornado %d, esperado %d)\n",a_cli,0);
 } else  {
     printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes incorreto  (retornado %d, esperado %d - retornado %d, esperado %d)\n",a_cli,0,n_cli,11); 
 } 
