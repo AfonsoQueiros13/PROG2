@@ -72,6 +72,13 @@ typedef struct
 } colecaoFilmes;
 
 /**
+ * Devolve a posicao do vetor que tem o valor maior
+ * parametros: array , em que cada posicao e uma estilo de filme diferente(categoria)
+ * retorno: posicao predominante
+ */
+int maior(int array[9]);
+
+/**
  * Cria um cliente novo
  * parametros: username e id dos filmes que já viu
  * retorno: cliente
@@ -105,6 +112,13 @@ void colecaoClientesApaga(colecaoClientes *td);
  * retorno: -1 se tabela nao existe, numero de clientes em caso de sucesso
  */
 int colecaoNumClientes(colecaoClientes *td);
+
+/**
+ * Determina a categoria mais vista do cliente conforme os filmes vistos
+ * parametros: apontador para colecaoClientes e para colecaoFilmes
+ * retorno: categoria mais vista em forma de string
+ */
+char* categoriaMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username);
 
 /**
  * Verifica a existencia de um cliente da colecaoClientes (tabela de dispersao)

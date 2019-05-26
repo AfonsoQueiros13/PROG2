@@ -1,6 +1,7 @@
 /*****************************************************************/
 /*           Movies | PROG2 | MIEEC | 2018/19                */
 /*****************************************************************/
+/*Jorge Afonso Barandas Queirós up201808903 ------------- Nuno Guterres Nogueira up201808905*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +12,86 @@
 
 
 //Declaracao funcoes auxiliares//
+int maior(int array[9]){
+    int greatest = array[0];
+    int maior = 0;
+    for (int i = 0; i < 9; i++) {
+        if (array[i] > greatest){
+            greatest = array[i];
+            maior = i;
+        }
+    }  
+    return maior;
+}
+unsigned long hash_filme (int filmId, int size) {
+    return filmId % size;
+}
+
+char* categoriaMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username){
+    int filmID;
+    unsigned long position;
+    long index;
+    int contador[10] = {0};
+    char *cat = (char*) malloc(sizeof(char));  
+    elementoCliente* elem_client;
+    elementoFilme* elem_film;
+    //primeira coisa a sugerir -> filmes com a categoria mais vista pelo utilizador
+    /* calcula hash para a string a adicionar */
+    index = hash_cliente(username, td->tamanho);
+    //procura o cliente na colecao clientes
+    elem_client = td->elementos[index];
+    while (elem_client != NULL && strcmp(elem_client->clien->username, username) != 0){
+        elem_client = elem_client->proximo;
+    }
+    /*encontrou o cliente neste ponto, vamos procurar os filmes por ele vistos
+    e perceber quais sao as categorias mais predominantes */
+    for(int i = 0;i < elem_client->clien->vistos->tamanho;i++){
+        //ver quantos documentarios
+        filmID = td->elementos[index]->clien->vistos->elementos[i];
+        position = hash_filme(filmID, colecFilmes->tamanho);
+        elem_film = colecFilmes->elementos[position];
+        //ja descobrimos a localizacao do filme na colecao, agr vamos ver qual a sua categoria
+        if(strcmp("Documentary",elem_film->film->categoria)==0) //filme  documentario
+            contador[0] ++;
+        if(strcmp("Short",elem_film->film->categoria)==0) //filme short
+            contador[1] ++;
+        if(strcmp("Horror",elem_film->film->categoria)==0) //filme horror
+            contador[2] ++;
+        if(strcmp("Drama",elem_film->film->categoria)==0) //filme drama
+            contador[3] ++;
+        if(strcmp("Comedy",elem_film->film->categoria)==0) //filme comedia
+            contador[4] ++;
+        if(strcmp("News",elem_film->film->categoria)==0) //filme news
+            contador[5] ++;
+        if(strcmp("Action",elem_film->film->categoria)==0) //filme action
+            contador[6] ++;
+        if(strcmp("Animation",elem_film->film->categoria)==0) //filme animation
+            contador[7] ++;
+        if(strcmp("Fantasy",elem_film->film->categoria)==0) //filme fantasy
+            contador[8] ++;
+    }
+    int categoria = maior(contador);
+    printf("\ncategoria = %d",categoria);
+    if(categoria==0)
+        strcpy(cat,"Documentary");
+    if(categoria==1)
+        strcpy(cat,"Short");
+    if(categoria==2)
+        strcpy(cat,"Horror");
+    if(categoria==3)
+        strcpy(cat,"Drama");
+    if(categoria==4)
+        strcpy(cat,"Comedy");
+    if(categoria==5)
+        strcpy(cat,"News");
+    if(categoria==6)
+        strcpy(cat,"Action");
+    if(categoria==7)
+        strcpy(cat,"Animation");
+    if(categoria==8)
+        strcpy(cat,"Fantasy");
+    return cat;
+}
 
 /////   Implementacao ClienteNovo  ///////
 elementoCliente* clienteNovo(const char *username,int id){
@@ -83,6 +164,8 @@ void colecaoClientesApaga(colecaoClientes *td)
     free(td->elementos);
     free(td);
 }
+
+
 
 /******************************** FUNCAO 1 FEITA!!****************************************************/
 int clienteAdiciona(colecaoClientes *td, const char *username, unsigned int filmId)
@@ -280,9 +363,7 @@ void mostraTabelaFilmes(colecaoFilmes *colecFilmes)
     printf("\n");
 }
 
-unsigned long hash_filme (int filmId, int size) {
-    return filmId % size;
-}
+
 
 colecaoFilmes* TabelaDispersao(int size) {
 
@@ -537,11 +618,16 @@ void colecaoFilmesApaga(colecaoFilmes* colecFilmes, colecaoClientes *td)
 
 vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username, int nFilmes, float limiar)
 {
-	// resolução do exercicio 9
-   return NULL;
+    vetor* sugestoes = vetor_novo(); 
+    //qual e a categoria mais vista pelo cliente?
+    char *cat = (char*) malloc(sizeof(char));
+    cat = categoriaMaisVista(colecFilmes,td,username); //funcao que vê qual a cat mais vista
+    printf("\ncategoria = %s",cat);
+
+    return NULL;
 }
 
 
 
-///////////////////////////////////////
+////////////////////////////////////!!!!!!!!FIM!!!!!!!!//////////////////////////////////////////////
 
