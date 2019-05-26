@@ -175,7 +175,7 @@ int inserirNovoFilme(colecaoFilmes* colecFilmes, char* titulo, char* categoria, 
  * retorno: 1 se teve sucesso, 0 nao existe o filme na estrutura e -1 se ocorreu algum erro
  *  NOTA 1: Não se esqueça que tem que remover o filme dos vistos dos clientes
  */
-int removerFilme(colecaoFilmes* colecFilmes, colecaoClientes *td, int nFilmes);
+int removerFilme(colecaoFilmes* colecFilmes, colecaoClientes *td, int filmId);
 
 /**
  * Apaga uma colecaoFilmes (estrutra implementada pelos alunos)
