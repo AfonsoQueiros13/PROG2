@@ -110,7 +110,7 @@ int main(int argc, char** argv)
   } else if (a_cli==1) {
     printf("\tERRO: clienteAdiciona:retorno ok para adicionar o novo cliente 'abcde' e numero  de clientes incorreto  (1 - retornado %d, esperado %d)\n",n_cli,11); 
    } else if (n_cli==11) {
-    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes correto  (retornado %d, esperado %d )\n",a_cli,1);
+    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes correto  (retornado %d, esperado %d -11)\n",a_cli,1);
 } else {
     printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes incorreto  (retornado %d, esperado %d - retornado %d, esperado %d)\n",a_cli,1,n_cli,11); 
 }
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
   } else if (a_cli==0) {
     printf("\tERRO: clienteAdiciona:retorno ok para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes incorreto  (0 - retornado %d, esperado %d)\n",n_cli,10); 
   } else if (n_cli==11) {
-    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes correto  (retornado %d, esperado %d)\n",a_cli,0);
+    printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar um cliente que já exciste 'Jh' e um filme que já viu '60' e numero  de clientes correto  (retornado %d, esperado %d - 11)\n",a_cli,0);
 } else  {
     printf("\tERRO: clienteAdiciona:retorno incorreto para adicionar o novo cliente 'abcde' e numero  de clientes incorreto  (retornado %d, esperado %d - retornado %d, esperado %d)\n",a_cli,0,n_cli,11); 
 } 
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
 // Testar a sugestão 3 Cliente tem cateogias empatadas e filmes têm rating empatados e o limiar obriga a mudar de categoria
   printf("\nSITUACAO 3- LIMIAR OBRIGA A MUDAR DE CATEGORIA \n");
   vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);
-  vetor_insere(vref,14,-1); vetor_insere(vref,57,-1); vetor_insere(vref,39,-1); vetor_insere(vref,20,-1); vetor_insere(vref,13,-1);
+  vetor_insere(vref,57,-1); vetor_insere(vref,39,-1); vetor_insere(vref,20,-1); vetor_insere(vref,13,-1); vetor_insere(vref,14,-1);
   start_t = clock();
   vec=sugestoes(filmes, clientes, "J9IFuAEe", 5, 9.5);
   end_t = clock();
@@ -189,7 +189,7 @@ int main(int argc, char** argv)
   // Testar a remoção
   printf("\nREMOVER UM FILME\n");
   removerFilme(filmes, clientes, 14);
-  vetor_remove(vref,0); vetor_insere(vref,0,-1);
+  vetor_remove(vref,4); vetor_insere(vref,0,-1);
   start_t = clock();
   vec=sugestoes(filmes, clientes, "J9IFuAEe", 5, 9.5);
   end_t = clock();
@@ -208,7 +208,7 @@ int main(int argc, char** argv)
   // Testar a inserção
   printf("\nINSERIR UM FILME\n");
   inserirNovoFilme(filmes, "O Rei Leao 13", "Comedy", 101, 9.8);
-  vetor_remove(vref,4); vetor_insere(vref,101,0);
+  vetor_remove(vref,4); vetor_insere(vref,101,-1);
   start_t = clock();
   vec=sugestoes(filmes, clientes, "J9IFuAEe", 5, 9.5);
   end_t = clock();
@@ -232,4 +232,3 @@ int main(int argc, char** argv)
  
   return 0;
 }
-

@@ -10,10 +10,9 @@
 #include "movies.h"
 #define MAXCHAR 100
 
-
 //Declaracao funcoes auxiliares//
 int maior(int array[9]){
-    int greatest = array[0];
+    int greatest = 0;
     int maior = 0;
     for (int i = 0; i < 9; i++) {
         if (array[i] > greatest){
@@ -23,16 +22,36 @@ int maior(int array[9]){
     }  
     return maior;
 }
+
+void SelectionSort(float A[], int size)
+{
+	for(int i=0; i<size-1; i++)
+	{
+		int Imin = i;
+		for(int j=i+1; j<size; j++)
+		{
+			if( A[j] < A[Imin] )
+			{
+				Imin = j;
+			}
+		}
+		float temp = A[Imin];
+		A[Imin] = A[i];
+		A[i] = temp;
+	}
+}
 unsigned long hash_filme (int filmId, int size) {
     return filmId % size;
 }
 
-char* categoriaMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username){
+int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username){
     int filmID;
     unsigned long position;
     long index;
-    int contador[10] = {0};
-    char *cat = (char*) malloc(sizeof(char));  
+    int *contador = (int*)malloc(2*sizeof(int));
+    char *cat =(char*)malloc(sizeof(char));
+    for(int i=0;i< 10 ;i++)
+        contador[i] = 0;
     elementoCliente* elem_client;
     elementoFilme* elem_film;
     //primeira coisa a sugerir -> filmes com a categoria mais vista pelo utilizador
@@ -69,30 +88,43 @@ char* categoriaMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* u
             contador[7] ++;
         if(strcmp("Fantasy",elem_film->film->categoria)==0) //filme fantasy
             contador[8] ++;
+        if(strcmp("Romance",elem_film->film->categoria)==0) //filme fantasy
+            contador[9] ++;
     }
-    int categoria = maior(contador);
-    printf("\ncategoria = %d",categoria);
-    if(categoria==0)
+    /*for(int i=0;i<9;i++)
+        printf("\n %d",contador[i]);
+    
+    int maximo = maior(contador);
+    if(maximo ==0){
         strcpy(cat,"Documentary");
-    if(categoria==1)
+    }
+    if(maximo ==1){
         strcpy(cat,"Short");
-    if(categoria==2)
+    }
+    if(maximo ==2){
         strcpy(cat,"Horror");
-    if(categoria==3)
+    }
+    if(maximo ==3){
         strcpy(cat,"Drama");
-    if(categoria==4)
+    }
+    if(maximo ==4){
         strcpy(cat,"Comedy");
-    if(categoria==5)
+    }
+    if(maximo ==5){
         strcpy(cat,"News");
-    if(categoria==6)
+    }
+    if(maximo ==6){
         strcpy(cat,"Action");
-    if(categoria==7)
+    }
+    if(maximo ==7){
         strcpy(cat,"Animation");
-    if(categoria==8)
+    }
+    if(maximo ==7){
         strcpy(cat,"Fantasy");
-    return cat;
-}
+    }*/
 
+    return contador;
+}
 /////   Implementacao ClienteNovo  ///////
 elementoCliente* clienteNovo(const char *username,int id){
 
@@ -618,13 +650,80 @@ void colecaoFilmesApaga(colecaoFilmes* colecFilmes, colecaoClientes *td)
 
 vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username, int nFilmes, float limiar)
 {
-    vetor* sugestoes = vetor_novo(); 
-    //qual e a categoria mais vista pelo cliente?
-    char *cat = (char*) malloc(sizeof(char));
-    cat = categoriaMaisVista(colecFilmes,td,username); //funcao que vê qual a cat mais vista
-    printf("\ncategoria = %s",cat);
+    vetor *sugestoes = vetor_novo();
+    int filmID ;
+    elementoFilme *elem_film;
+    elementoFilme *elem_film1;
+    elementoCliente *elem_clien;
+    float maximo = 0.0;
+    char * cat = (char*)malloc(sizeof(char));
+    int *contador = (int*) malloc(colecFilmes->tamanho*sizeof(int));
+    //int *valores = (int*) malloc(sizeof(int));
+    contador = categoriasMaisVista(colecFilmes,td,username);
+    for(int i=0;i<9;i++){
+        printf("\ncontador[%d] = %d",i,contador[i]);
+    }
+    int high = maior(contador);
 
-    return NULL;
+    if(high==0)
+        strcpy(cat,"Documentary");
+    if(high==1)
+        strcpy(cat,"Short");
+    if(high==2)
+        strcpy(cat,"Horror");
+    if(high==3)
+        strcpy(cat,"Drama");
+    if(high==4)
+        strcpy(cat,"Comedy");
+    if(high==5)
+        strcpy(cat,"News");
+    if(high==6)
+        strcpy(cat,"Action");
+    if(high==7)
+        strcpy(cat,"Animation");
+    if(high==8)
+        strcpy(cat,"Fantasy");
+    if(high==8)
+        strcpy(cat,"Romance");
+
+
+    printf("\ncat = %s",cat);
+    for (int  i = 0; i < colecFilmes->tamanho; i++)
+    {
+        if (colecFilmes->elementos[i])
+        {
+            elem_film = colecFilmes->elementos[i];
+            while (elem_film)
+            {
+                printf("\nFILME PRIM = %s",elem_film->film->titulo);
+                for (int  j = 0; j < colecFilmes->tamanho; j++)
+                {
+                    elem_film1 = colecFilmes->elementos[j];
+                    if (colecFilmes->elementos[j])
+                    {
+                        while (elem_film1)
+                        {
+                             printf("\nfilme_seg = %s",elem_film1->film->titulo);
+                             elem_film1 = elem_film1->proximo;
+                        }
+
+                    }
+        
+                }
+                //printf("\nmaximo = %lf",maximo);
+                elem_film = elem_film->proximo;
+            }
+
+        }
+        
+    }
+    /*for(int i=0;i<colecFilmes->tamanho; i++){
+        printf("valores[%d] = %d ",i,valores[i]);
+    }*/
+    int cont = nFilmes;
+    //while(cont !=0)
+    //vetor_insere(valores[i],filmID,-1);
+    return NULL; 
 }
 
 

@@ -118,8 +118,7 @@ int colecaoNumClientes(colecaoClientes *td);
  * parametros: apontador para colecaoClientes e para colecaoFilmes
  * retorno: categoria mais vista em forma de string
  */
-char* categoriaMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username);
-
+int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username);
 /**
  * Verifica a existencia de um cliente da colecaoClientes (tabela de dispersao)
  * parametros: apontador para colecaoClientes, username do cliente a verificar

@@ -45,7 +45,7 @@ Les blanchisseuses|Short|44|8.2
 Bois de Boulogne|Documentary|45|2.7
 Boulevard des Italiens|Documentary|46|5.4
 The Boxing Kangaroo|Short|47|5.0
-Boxing Match; or, Glove Contest|Short|48|6.8
+"Boxing Match; or, Glove Contest|Short|48|6.8"
 Bb et fillettes|Documentary|49|7.4
 Campement de bohmiens|Documentary|50|7.8
 Carga de rurales|Documentary|51|3.5
