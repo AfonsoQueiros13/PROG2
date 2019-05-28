@@ -71,6 +71,12 @@ typedef struct
 	int tamanho;			/* tamanho do vetor de elementos */
 } colecaoFilmes;
 
+
+/**
+ * Devolve num vetor de 10 posicoes (cada uma representa uma categoria diferente)
+ * quantos filmes o utilizador viu de cada categoria
+ */
+int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username);
 /**
  * Devolve a posicao do vetor que tem o valor maior
  * parametros: array , em que cada posicao e uma estilo de filme diferente(categoria)

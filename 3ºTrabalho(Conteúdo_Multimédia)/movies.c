@@ -8,41 +8,9 @@
 #include <string.h>
 #include <math.h>
 #include "movies.h"
+#include "tools.c"
 #define MAXCHAR 100
 
-//Declaracao funcoes auxiliares//
-int maior(int array[9]){
-    int greatest = 0;
-    int maior = 0;
-    for (int i = 0; i < 9; i++) {
-        if (array[i] > greatest){
-            greatest = array[i];
-            maior = i;
-        }
-    }  
-    return maior;
-}
-
-void SelectionSort(float A[], int size)
-{
-	for(int i=0; i<size-1; i++)
-	{
-		int Imin = i;
-		for(int j=i+1; j<size; j++)
-		{
-			if( A[j] < A[Imin] )
-			{
-				Imin = j;
-			}
-		}
-		float temp = A[Imin];
-		A[Imin] = A[i];
-		A[i] = temp;
-	}
-}
-unsigned long hash_filme (int filmId, int size) {
-    return filmId % size;
-}
 
 /////   Implementacao ClienteNovo  ///////
 elementoCliente* clienteNovo(const char *username,int id){
@@ -572,6 +540,7 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
     int filmID ;
     char insere =0;
     char filmes[2000];
+    int *valores = (int*)malloc(10*sizeof(int));
     elementoFilme *elem_film;
     elementoCliente *elem_clien;
     long index = hash_cliente(username, td->tamanho);
@@ -581,7 +550,7 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
         elem_clien = elem_clien->proximo;
     }
 
-    for(int i = 0;i < colecFilmes->tamanho;i++)
+    for(int i = 0;i < colecFilmes->tamanho+1;i++)
     {
         if (colecFilmes->elementos[i])
         {
@@ -598,13 +567,19 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
                     }    
                 }
                 if(insere==0){
-                    sprintf(filmes+strlen(filmes),"\n%d_%.2lf",elem_film->film->filmId,elem_film->film->rating);     
+                    sprintf(filmes+strlen(filmes),"\n%d_%.2lf_%s",elem_film->film->filmId,elem_film->film->rating,elem_film->film->categoria);     
                 }
                 insere=0;
                 elem_film = elem_film->proximo;
             }
         
         }
+
+    }
+    //guardado o vetor com os filmes que ele não viu, veremos qual a catergoria mais vista pelo utilizador;
+    valores = categoriasMaisVista(colecFilmes,td,username);
+    for(int i=0;i<10;i++){
+        printf("contador[%d] = %d",i,valores[i]);
     }
     printf("%s",filmes);
     return NULL; 
