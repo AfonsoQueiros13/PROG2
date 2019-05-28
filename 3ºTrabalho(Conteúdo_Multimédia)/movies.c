@@ -44,87 +44,6 @@ unsigned long hash_filme (int filmId, int size) {
     return filmId % size;
 }
 
-int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username){
-    int filmID;
-    unsigned long position;
-    long index;
-    int *contador = (int*)malloc(2*sizeof(int));
-    char *cat =(char*)malloc(sizeof(char));
-    for(int i=0;i< 10 ;i++)
-        contador[i] = 0;
-    elementoCliente* elem_client;
-    elementoFilme* elem_film;
-    //primeira coisa a sugerir -> filmes com a categoria mais vista pelo utilizador
-    /* calcula hash para a string a adicionar */
-    index = hash_cliente(username, td->tamanho);
-    //procura o cliente na colecao clientes
-    elem_client = td->elementos[index];
-    while (elem_client != NULL && strcmp(elem_client->clien->username, username) != 0){
-        elem_client = elem_client->proximo;
-    }
-    /*encontrou o cliente neste ponto, vamos procurar os filmes por ele vistos
-    e perceber quais sao as categorias mais predominantes */
-    for(int i = 0;i < elem_client->clien->vistos->tamanho;i++){
-        //ver quantos documentarios
-        filmID = td->elementos[index]->clien->vistos->elementos[i];
-        position = hash_filme(filmID, colecFilmes->tamanho);
-        elem_film = colecFilmes->elementos[position];
-        //ja descobrimos a localizacao do filme na colecao, agr vamos ver qual a sua categoria
-        if(strcmp("Documentary",elem_film->film->categoria)==0) //filme  documentario
-            contador[0] ++;
-        if(strcmp("Short",elem_film->film->categoria)==0) //filme short
-            contador[1] ++;
-        if(strcmp("Horror",elem_film->film->categoria)==0) //filme horror
-            contador[2] ++;
-        if(strcmp("Drama",elem_film->film->categoria)==0) //filme drama
-            contador[3] ++;
-        if(strcmp("Comedy",elem_film->film->categoria)==0) //filme comedia
-            contador[4] ++;
-        if(strcmp("News",elem_film->film->categoria)==0) //filme news
-            contador[5] ++;
-        if(strcmp("Action",elem_film->film->categoria)==0) //filme action
-            contador[6] ++;
-        if(strcmp("Animation",elem_film->film->categoria)==0) //filme animation
-            contador[7] ++;
-        if(strcmp("Fantasy",elem_film->film->categoria)==0) //filme fantasy
-            contador[8] ++;
-        if(strcmp("Romance",elem_film->film->categoria)==0) //filme fantasy
-            contador[9] ++;
-    }
-    /*for(int i=0;i<9;i++)
-        printf("\n %d",contador[i]);
-    
-    int maximo = maior(contador);
-    if(maximo ==0){
-        strcpy(cat,"Documentary");
-    }
-    if(maximo ==1){
-        strcpy(cat,"Short");
-    }
-    if(maximo ==2){
-        strcpy(cat,"Horror");
-    }
-    if(maximo ==3){
-        strcpy(cat,"Drama");
-    }
-    if(maximo ==4){
-        strcpy(cat,"Comedy");
-    }
-    if(maximo ==5){
-        strcpy(cat,"News");
-    }
-    if(maximo ==6){
-        strcpy(cat,"Action");
-    }
-    if(maximo ==7){
-        strcpy(cat,"Animation");
-    }
-    if(maximo ==7){
-        strcpy(cat,"Fantasy");
-    }*/
-
-    return contador;
-}
 /////   Implementacao ClienteNovo  ///////
 elementoCliente* clienteNovo(const char *username,int id){
 
@@ -540,7 +459,6 @@ int removerFilme(colecaoFilmes* colecFilmes, colecaoClientes *td, int filmId)
         printf ("\nSem memória !");
         return -1;
     }
-
     elementoFilme* filmElem = ProcuraTabela(colecFilmes->elementos[position]->film, colecFilmes);
     elementoFilme* aux;
     elementoCliente * elem;
@@ -652,79 +570,46 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
 {
     vetor *sugestoes = vetor_novo();
     int filmID ;
+    char insere =0;
+    char filmes[2000];
     elementoFilme *elem_film;
-    elementoFilme *elem_film1;
     elementoCliente *elem_clien;
-    float maximo = 0.0;
-    char * cat = (char*)malloc(sizeof(char));
-    int *contador = (int*) malloc(colecFilmes->tamanho*sizeof(int));
-    //int *valores = (int*) malloc(sizeof(int));
-    contador = categoriasMaisVista(colecFilmes,td,username);
-    for(int i=0;i<9;i++){
-        printf("\ncontador[%d] = %d",i,contador[i]);
+    long index = hash_cliente(username, td->tamanho);
+    //procura o cliente na colecao clientes
+    elem_clien = td->elementos[index];
+    while (elem_clien != NULL && strcmp(elem_clien->clien->username, username) != 0){
+        elem_clien = elem_clien->proximo;
     }
-    int high = maior(contador);
 
-    if(high==0)
-        strcpy(cat,"Documentary");
-    if(high==1)
-        strcpy(cat,"Short");
-    if(high==2)
-        strcpy(cat,"Horror");
-    if(high==3)
-        strcpy(cat,"Drama");
-    if(high==4)
-        strcpy(cat,"Comedy");
-    if(high==5)
-        strcpy(cat,"News");
-    if(high==6)
-        strcpy(cat,"Action");
-    if(high==7)
-        strcpy(cat,"Animation");
-    if(high==8)
-        strcpy(cat,"Fantasy");
-    if(high==8)
-        strcpy(cat,"Romance");
-
-
-    printf("\ncat = %s",cat);
-    for (int  i = 0; i < colecFilmes->tamanho; i++)
+    for(int i = 0;i < colecFilmes->tamanho;i++)
     {
         if (colecFilmes->elementos[i])
         {
             elem_film = colecFilmes->elementos[i];
             while (elem_film)
             {
-                printf("\nFILME PRIM = %s",elem_film->film->titulo);
-                for (int  j = 0; j < colecFilmes->tamanho; j++)
+                for(int j = 0;j <  elem_clien->clien->vistos->tamanho;j++)
                 {
-                    elem_film1 = colecFilmes->elementos[j];
-                    if (colecFilmes->elementos[j])
+                    filmID = td->elementos[index]->clien->vistos->elementos[j];
+                    //printf("\nelem_film->filmID = %d e vistos = %d",elem_film->film->filmId,filmID); 
+                    if(elem_film->film->filmId == filmID) // utilizador viu este filme
                     {
-                        while (elem_film1)
-                        {
-                             printf("\nfilme_seg = %s",elem_film1->film->titulo);
-                             elem_film1 = elem_film1->proximo;
-                        }
-
-                    }
-        
+                        insere=1; 
+                    }    
                 }
-                //printf("\nmaximo = %lf",maximo);
+                if(insere==0){
+                    sprintf(filmes+strlen(filmes),"\n%d_%.2lf",elem_film->film->filmId,elem_film->film->rating);     
+                }
+                insere=0;
                 elem_film = elem_film->proximo;
             }
-
-        }
         
+        }
     }
-    /*for(int i=0;i<colecFilmes->tamanho; i++){
-        printf("valores[%d] = %d ",i,valores[i]);
-    }*/
-    int cont = nFilmes;
-    //while(cont !=0)
-    //vetor_insere(valores[i],filmID,-1);
+    printf("%s",filmes);
     return NULL; 
 }
+
 
 
 

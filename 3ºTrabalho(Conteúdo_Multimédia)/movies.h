@@ -114,12 +114,6 @@ void colecaoClientesApaga(colecaoClientes *td);
 int colecaoNumClientes(colecaoClientes *td);
 
 /**
- * Determina a categoria mais vista do cliente conforme os filmes vistos
- * parametros: apontador para colecaoClientes e para colecaoFilmes
- * retorno: categoria mais vista em forma de string
- */
-int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username);
-/**
  * Verifica a existencia de um cliente da colecaoClientes (tabela de dispersao)
  * parametros: apontador para colecaoClientes, username do cliente a verificar
  * retorno: -1 se erro, 0 se o cliente nao consta na tabela, 1 se consta
