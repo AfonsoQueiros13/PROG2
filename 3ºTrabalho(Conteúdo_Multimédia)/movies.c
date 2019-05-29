@@ -626,8 +626,11 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
         if(cont <nFilmes){
             vetor_insere(sugestoes,ids[i],-1);
             cont++;
-       }
+        }
+       
 }
+    if(count < nFilmes ) //insere 0's no final
+             vetor_insere(sugestoes,0,-1);
     fclose(filmescatpref);
     //free dos mallocs
     //free(cat);
