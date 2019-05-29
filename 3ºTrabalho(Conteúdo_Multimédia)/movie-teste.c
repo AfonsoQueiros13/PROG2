@@ -146,7 +146,7 @@ int main(int argc, char** argv)
     printf("\tERRO: Sugestoes incorretas para situacao inicial\n");
   }
   vetor_apaga(vec);
-
+  
   // Testar a sugestão 2 Cliente tem cateogias empatadas e filmes têm rating empatados
   printf("\nSITUACAO 2: CLIENTE TEM CATEGORIAS EMPATADAS E FILMES TÊM RATING EMPATADOS \n");
   vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);vetor_remove(vref,0);

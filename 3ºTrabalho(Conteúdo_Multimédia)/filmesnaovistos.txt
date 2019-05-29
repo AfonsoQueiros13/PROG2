@@ -1,0 +1,8 @@
+9_9.60_Romance
+12_9.70_Action
+13_9.60_Documentary
+20_9.60_Documentary
+39_9.60_Documentary
+57_9.60_Documentary
+66_9.60_Fantasy
+101_9.80_Comedy

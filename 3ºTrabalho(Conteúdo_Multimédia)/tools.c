@@ -1,4 +1,50 @@
-//Declaracao funcoes auxiliares//
+/*****************************************************************/
+/*           TOOLS | FUNCOES AUXILIARES | PROG2 | MIEEC | 2018/19                */
+/*****************************************************************/
+/*Jorge Afonso Barandas Queirós up201808903 ------------- Nuno Guterres Nogueira up201808905*/
+
+
+char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
+    int max = valores[0]; 
+    char *cat =(char*)malloc(sizeof(char));
+    for (int i = 1; i < 10; i++){ //vamos ver qual é a categoria predominante
+        if (valores[i] > max && i != *categoria_a_sugerir){
+            max = valores[i];
+            *categoria_a_sugerir = i; 
+        }
+    }
+    if(*categoria_a_sugerir ==0){
+        strcpy(cat,"Documentary");
+    }
+    if(*categoria_a_sugerir ==1){
+        strcpy(cat,"Short");
+    }
+    if(*categoria_a_sugerir ==2){
+        strcpy(cat,"Horror");
+    }
+    if(*categoria_a_sugerir ==3){
+        strcpy(cat,"Drama");
+    }
+    if(*categoria_a_sugerir ==4){
+        strcpy(cat,"Comedy");
+    }
+    if(*categoria_a_sugerir ==5){
+        strcpy(cat,"News");
+    }
+    if(*categoria_a_sugerir ==6){
+        strcpy(cat,"Action");
+    }
+    if(*categoria_a_sugerir ==7){
+        strcpy(cat,"Animation");
+    }
+    if(*categoria_a_sugerir ==8){
+        strcpy(cat,"Fantasy");
+    }
+    if(*categoria_a_sugerir ==9){
+        strcpy(cat,"Romance");
+    }
+    return cat;
+}
 int maior(int array[9]){
     int greatest = 0;
     int maior = 0;
@@ -11,23 +57,28 @@ int maior(int array[9]){
     return maior;
 }
 
-void SelectionSort(float A[], int size)
+void insert_sorted (float *sorted,int *ids, int count,int id, float value)
 {
-	for(int i=0; i<size-1; i++)
-	{
-		int Imin = i;
-		for(int j=i+1; j<size; j++)
-		{
-			if( A[j] < A[Imin] )
-			{
-				Imin = j;
-			}
-		}
-		float temp = A[Imin];
-		A[Imin] = A[i];
-		A[i] = temp;
-	}
+    int i = 0;
+    printf("\nvalue = %f",value);
+    sorted[count] = value;
+    ids[count] = id;
+    if (count == 0) return;
+    for (i = count;i > 0; i--) {
+        if (value < sorted[i-1]) 
+        {
+            printf("\nsorted[%d] = %f",i,sorted[i]);
+            sorted[i] = sorted[i-1];
+            printf("\nafter -> sorted[%d] = %f",i,sorted[i]);
+            ids[i] = ids[i-1];
+        }
+        else break;
+    }
+    sorted[i] = value;
+    ids[i] = id;
+
 }
+
 unsigned long hash_filme (int filmId, int size) {
     return filmId % size;
 }
