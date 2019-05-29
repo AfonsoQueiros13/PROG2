@@ -5,7 +5,7 @@
 
 
 char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
-    int max = valores[0]; 
+    int max =valores[0]; 
     char *cat =(char*)malloc(sizeof(char));
     for (int i = 1; i < 10; i++){ //vamos ver qual é a categoria predominante
         if (valores[i] > max && i != *categoria_a_sugerir){
@@ -45,21 +45,12 @@ char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
     }
     return cat;
 }
-int maior(int array[9]){
-    int greatest = 0;
-    int maior = 0;
-    for (int i = 0; i < 9; i++) {
-        if (array[i] > greatest){
-            greatest = array[i];
-            maior = i;
-        }
-    }  
-    return maior;
-}
+
 
 void insert_sorted (float *sorted,int *ids, int count,int id, float value)
 {
     int i = 0;
+    
     printf("\nvalue = %f",value);
     sorted[count] = value;
     ids[count] = id;
@@ -67,13 +58,12 @@ void insert_sorted (float *sorted,int *ids, int count,int id, float value)
     for (i = count;i > 0; i--) {
         if (value < sorted[i-1]) 
         {
-            printf("\nsorted[%d] = %f",i,sorted[i]);
             sorted[i] = sorted[i-1];
-            printf("\nafter -> sorted[%d] = %f",i,sorted[i]);
             ids[i] = ids[i-1];
         }
         else break;
     }
+
     sorted[i] = value;
     ids[i] = id;
 

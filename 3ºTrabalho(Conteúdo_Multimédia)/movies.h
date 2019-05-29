@@ -77,13 +77,11 @@ typedef struct
  * quantos filmes o utilizador viu de cada categoria
  */
 int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username);
-/**
- * Devolve a posicao do vetor que tem o valor maior
- * parametros: array , em que cada posicao e uma estilo de filme diferente(categoria)
- * retorno: posicao predominante
- */
-int maior(int array[9]);
 
+/**
+ * Apresenta por ordem decrescente os filmes conforme o seu rating
+ */
+void insert_sorted (float *sorted,int *ids, int count,int id, float value);
 /**
  * Cria um cliente novo
  * parametros: username e id dos filmes que já viu

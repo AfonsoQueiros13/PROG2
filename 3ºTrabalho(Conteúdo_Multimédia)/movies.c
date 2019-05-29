@@ -550,7 +550,6 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
     FILE *filmescatpref;
     filmesnvistos = fopen("filmesnaovistos.txt", "w");
     char filmes[2000];
-    
     int *valores = (int*)malloc(10*sizeof(int));
     char *cat =(char*)malloc(sizeof(char));
     elementoFilme *elem_film;
@@ -589,27 +588,35 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
     fclose(filmesnvistos);
     //guardado o vetor com os filmes que ele não viu, veremos qual a catergoria mais vista pelo utilizador;
     valores = categoriasMaisVista(colecFilmes,td,username);
-    printf("categoria a sugerir = %d",categoria_a_sugerir);
-    cat = CategoriaASugerir(valores,&categoria_a_sugerir);
-
+    for(int i=0;i<10;i++){
+        printf("\n%d",valores[i]);
+    }
+    cat = CategoriaASugerir(valores,&categoria_a_sugerir); //categoria mais vista pelo user
     printf("\ncat = %s",cat);
     printf("\ncategoria a sugerir = %d\n",categoria_a_sugerir);
     //agora vamos selecionar os filmes para sugerir conforme as categorias mais vistas
     filmescatpref = fopen("filmescatpreferida.txt","w+");
     filmesnvistos = fopen("filmesnaovistos.txt","r");
     printf("\nando aqui ?");
-    while(fscanf(filmesnvistos,"%d_%f_%s\n",&id,&rating,categoria)!=EOF){
-        if(strcmp(categoria,cat)==0){
+    while(fscanf(filmesnvistos,"%d_%f_%s\n",&id,&rating,categoria)!=EOF)
+    {
+        if(strcmp(categoria,cat)==0)
+        {
             sprintf(filmes,"%d_%.2lf_%s\n",
             id,rating,categoria);
             fputs(filmes,filmescatpref);
         }
-        /*if(rating < limiar)
+        else
         {
-            printf("nao entres aqui\n");
             cat = CategoriaASugerir(valores,&categoria_a_sugerir);
-            
-        }*/
+            printf("\nnova_cat = %s",cat);
+            if(strcmp(categoria,cat)==0)
+            {
+                sprintf(filmes,"%d_%.2lf_%s\n",
+                id,rating,categoria);
+                fputs(filmes,filmescatpref);
+            }
+        }
     }
     fclose(filmesnvistos);
     fclose(filmescatpref);
@@ -618,20 +625,37 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
         insert_sorted(sorted,ids, count,id,rating); 
         ++count; 
     }
+    /*for(int i = 0;i<nFilmes;i++){
+        for(int j=1;j<nFilmes;j++)
+        {
+            if(sorted[i] == sorted[j])
+            {
+                if(ids[i] < ids[j])
+                {
+                    int temp = ids[j];
+                    ids[j]= ids[i];
+                    ids[i]= ids[j];
+                }  
+            }
+        }
+    }*/
     int cont=0;
     printf("\ncount = %d",count);
-    printf ("Sorted values : ");
-    for (int i = count-1; i >= 0; i-- ) {
+    for (int i = count-1; i >= 0; i-- ) 
+    {
         printf("\n%d",ids[i]);
         if(cont <nFilmes){
             vetor_insere(sugestoes,ids[i],-1);
             cont++;
         }
        
-}
-    if(count < nFilmes ) //insere 0's no final
-             vetor_insere(sugestoes,0,-1);
+    }
+    while(count < nFilmes ){//insere 0's no final
+        vetor_insere(sugestoes,0,-1);
+        count ++;
+    }
     fclose(filmescatpref);
+
     //free dos mallocs
     //free(cat);
     //free(valores);
