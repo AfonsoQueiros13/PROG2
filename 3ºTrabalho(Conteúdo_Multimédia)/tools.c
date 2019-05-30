@@ -3,6 +3,17 @@
 /*****************************************************************/
 /*Jorge Afonso Barandas Queirós up201808903 ------------- Nuno Guterres Nogueira up201808905*/
 
+int maior(int array[10]){
+    int greatest = 0;
+    int maior = 0;
+    for (int i = 0; i < 9; i++) {
+        if (array[i] > greatest){
+            greatest = array[i];
+            maior = i;
+        }
+    }  
+    return maior;
+}
 
 char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
     int max =valores[0]; 
@@ -15,58 +26,84 @@ char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
     }
     if(*categoria_a_sugerir ==0){
         strcpy(cat,"Documentary");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==1){
         strcpy(cat,"Short");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==2){
         strcpy(cat,"Horror");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==3){
         strcpy(cat,"Drama");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==4){
         strcpy(cat,"Comedy");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==5){
         strcpy(cat,"News");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==6){
         strcpy(cat,"Action");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==7){
         strcpy(cat,"Animation");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==8){
         strcpy(cat,"Fantasy");
+        valores[*categoria_a_sugerir]=0;
     }
     if(*categoria_a_sugerir ==9){
         strcpy(cat,"Romance");
+        valores[*categoria_a_sugerir]=0;
     }
     return cat;
 }
 
 
-void insert_sorted (float *sorted,int *ids, int count,int id, float value)
+void insert_sorted (float *sorted,int *ids, int count,int id, float value,int *anterior,int *atual,int *posicao)
 {
     int i = 0;
-    
-    printf("\nvalue = %f",value);
-    sorted[count] = value;
-    ids[count] = id;
-    if (count == 0) return;
-    for (i = count;i > 0; i--) {
-        if (value < sorted[i-1]) 
-        {
+ 
+    if(*anterior == *atual){
+        sorted[*posicao] = value;
+        ids[*posicao] = id;
+        if (count == 0) return;
+        for (i = count;i > 0; i--) {
+            if (value < sorted[i-1]) 
+            {
             sorted[i] = sorted[i-1];
             ids[i] = ids[i-1];
+            }
+            else break;
         }
-        else break;
+
+    sorted[*posicao] = value;
+    ids[*posicao] = id;
     }
+    else{
+        sorted[*posicao] = value;
+        ids[*posicao] = id;
+        if (count == 0) return;
+        for (i = count;i > 0; i--) {
+            if (value < sorted[i-1]) 
+            {
+            sorted[i] = sorted[i-1];
+            ids[i] = ids[i-1];
+            }
+            else break;
+        }
 
-    sorted[i] = value;
-    ids[i] = id;
-
+    sorted[*posicao] = value;
+    ids[*posicao] = id;
+    }
 }
 
 unsigned long hash_filme (int filmId, int size) {
