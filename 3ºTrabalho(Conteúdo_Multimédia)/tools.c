@@ -68,11 +68,12 @@ char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
 }
 
 
-void insert_sorted (float *sorted,int *ids, int count,int id, float value,int *anterior,int *atual,int *po)
+void insert_sorted (float *sorted,int *ids, int count,int id, float value,int anterior,int atual,int po)
 {
     int i = 0;
  
-   // if(*anterior == *atual){
+    if(anterior == atual){
+        printf("id = %d",ids[count]);
         sorted[count] = value;
         ids[count] = id;
         if (count == 0) return;
@@ -85,9 +86,13 @@ void insert_sorted (float *sorted,int *ids, int count,int id, float value,int *a
             else break;
         }
 
-    sorted[i] = value;
-    ids[i] = id;
-   // }
+        sorted[i] = value;
+        ids[i] = id;
+    }
+    else{
+        sorted[count] = value;
+        ids[count] = id;
+    }
 }
 
 unsigned long hash_filme (int filmId, int size) {

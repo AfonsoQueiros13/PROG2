@@ -81,7 +81,7 @@ int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* 
 /**
  * Apresenta por ordem decrescente os filmes conforme o seu rating
  */
-void insert_sorted (float *sorted,int *ids, int count,int id, float value,int *anterior,int *atual,int *posicao);
+void insert_sorted (float *sorted,int *ids, int count,int id, float value,int anterior,int atual,int posicao);
 /**
  * Cria um cliente novo
  * parametros: username e id dos filmes que já viu

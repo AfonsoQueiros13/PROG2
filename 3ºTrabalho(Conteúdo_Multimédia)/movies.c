@@ -591,7 +591,6 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
     //guardado o vetor com os filmes que ele não viu, veremos qual a catergoria mais vista pelo utilizador;
     valores = categoriasMaisVista(colecFilmes,td,username);
     categoria_a_sugerir = maior(valores);
-    printf("\n->_>_>_>_>_CATEGORIA A SUGERIR = %d",categoria_a_sugerir);
     for(int i=0;i<10;i++){
         printf("\n%d",valores[i]);
     }
@@ -609,7 +608,7 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
                 id,rating,categoria);
                 fputs(filmes,filmescatpref);
                 count_filmescatpref ++;
-                insert_sorted(sorted,ids, count,id,rating,&categoria_anterior,&categoria_atual,&count_filmescatpref); 
+                insert_sorted(sorted,ids, count,id,rating,categoria_anterior,categoria_atual,count_filmescatpref); 
                 count ++;
             }
         printf("\ncount = %d",count);
