@@ -68,7 +68,7 @@ char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
 }
 
 
-void insert_sorted (float *sorted,int *ids, int count,int id, float value,int anterior,int atual,int po)
+void insert_sorted (float *sorted,int *ids, int count,int id, float value,int anterior,int atual,int posicao)
 {
     int i = 0;
  
@@ -91,7 +91,7 @@ void insert_sorted (float *sorted,int *ids, int count,int id, float value,int an
     }
     else{
         sorted[count] = value;
-        ids[count] = id;
+        ids[posicao] = id;
     }
 }
 
