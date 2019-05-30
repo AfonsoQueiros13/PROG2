@@ -615,7 +615,7 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
         printf("\ncount = %d",count);
         }
         //memset(sorted,0,sizeof(sorted));
-        count =0;
+        //count =0;
 
     }
     fclose(filmesnvistos);
@@ -649,4 +649,3 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
 
 
 ////////////////////////////////////!!!!!!!!FIM!!!!!!!!//////////////////////////////////////////////
-

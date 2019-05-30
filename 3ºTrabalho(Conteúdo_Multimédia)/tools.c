@@ -68,13 +68,13 @@ char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
 }
 
 
-void insert_sorted (float *sorted,int *ids, int count,int id, float value,int *anterior,int *atual,int *posicao)
+void insert_sorted (float *sorted,int *ids, int count,int id, float value,int *anterior,int *atual,int *po)
 {
     int i = 0;
  
-    if(*anterior == *atual){
-        sorted[*posicao] = value;
-        ids[*posicao] = id;
+   // if(*anterior == *atual){
+        sorted[count] = value;
+        ids[count] = id;
         if (count == 0) return;
         for (i = count;i > 0; i--) {
             if (value < sorted[i-1]) 
@@ -85,25 +85,9 @@ void insert_sorted (float *sorted,int *ids, int count,int id, float value,int *a
             else break;
         }
 
-    sorted[*posicao] = value;
-    ids[*posicao] = id;
-    }
-    else{
-        sorted[*posicao] = value;
-        ids[*posicao] = id;
-        if (count == 0) return;
-        for (i = count;i > 0; i--) {
-            if (value < sorted[i-1]) 
-            {
-            sorted[i] = sorted[i-1];
-            ids[i] = ids[i-1];
-            }
-            else break;
-        }
-
-    sorted[*posicao] = value;
-    ids[*posicao] = id;
-    }
+    sorted[i] = value;
+    ids[i] = id;
+   // }
 }
 
 unsigned long hash_filme (int filmId, int size) {
