@@ -2,4 +2,4 @@
 20_9.60_Documentary
 39_9.60_Documentary
 57_9.60_Documentary
-14_9.70_Comedy
+101_9.80_Comedy

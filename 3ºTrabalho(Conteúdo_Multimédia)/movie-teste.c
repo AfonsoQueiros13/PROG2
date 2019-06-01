@@ -185,7 +185,7 @@ int main(int argc, char** argv)
     printf("\tERRO: Sugestoes incorretas para situacao inicial\n");
   }
   vetor_apaga(vec);
-  /*
+  
   // Testar a remoção
   printf("\nREMOVER UM FILME\n");
   removerFilme(filmes, clientes, 14);
@@ -204,7 +204,7 @@ int main(int argc, char** argv)
     printf("\tERRO: Sugestoes incorretas apos remocao de um filme\n");
   }
   vetor_apaga(vec);
-
+  
   // Testar a inserção
   printf("\nINSERIR UM FILME\n");
   inserirNovoFilme(filmes, "O Rei Leao 13", "Comedy", 101, 9.8);
@@ -225,7 +225,7 @@ int main(int argc, char** argv)
   vetor_apaga(vec);
 
   vetor_apaga(vref);
-  */
+  
   colecaoFilmesApaga(filmes,clientes);
   
   colecaoClientesApaga(clientes);

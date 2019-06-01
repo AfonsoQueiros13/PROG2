@@ -9,6 +9,7 @@
 #include <math.h>
 #include "movies.h"
 #include "tools.c"
+#include <unistd.h>
 #define MAXCHAR 100
 
 
@@ -390,7 +391,7 @@ int inserirNovoFilme(colecaoFilmes* colecFilmes, char* titulo, char* categoria, 
 
 colecaoFilmes* filmesCarrega(const char *nomeFicheiro)
 {
-   FILE *fp;
+    FILE *fp;
     char *filename = "filmesShort.txt";
     char titulo[100];
     char categoria[20];
@@ -536,24 +537,28 @@ void colecaoFilmesApaga(colecaoFilmes* colecFilmes, colecaoClientes *td)
 
 vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username, int nFilmes, float limiar)
 {
+    int categoria_anterior;
+    int categoria_atual;
     vetor *sugestoes = vetor_novo();
     int id;
     int count_filmescatpref =0;
     int count =0;
     int cont=0;
-    char *categoria =(char*)malloc(sizeof(char));
+    int tentativa_insercao =0;
+    char *categoria =(char*)malloc(20*sizeof(char));
     float rating;
-    float sorted[100];
-    int ids[100];
+    float *sorted = (float*)malloc(100*sizeof(float));
+    int *ids = (int*)malloc(200*sizeof(int));
     int filmID;
     int categoria_a_sugerir;
     char insere =0;
     FILE *filmesnvistos;
     FILE *filmescatpref;
     filmesnvistos = fopen("filmesnaovistos.txt", "w");
-    char filmes[2000];
+    char *filmes= (char*)malloc(200*sizeof(char));
     int *valores = (int*)malloc(10*sizeof(int));
-    char *cat =(char*)malloc(sizeof(char));
+    memset(valores,0,10*sizeof(int));
+    char *cat =(char*)malloc(20*sizeof(char));
     elementoFilme *elem_film;
     elementoCliente *elem_clien;
     long index = hash_cliente(username, td->tamanho);
@@ -590,38 +595,54 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
     fclose(filmesnvistos);
     //guardado o vetor com os filmes que ele não viu, veremos qual a catergoria mais vista pelo utilizador;
     valores = categoriasMaisVista(colecFilmes,td,username);
+    sleep(1);
     categoria_a_sugerir = maior(valores);
     for(int i=0;i<10;i++){
-        printf("\n%d",valores[i]);
+        printf("\nvalores[%d] = %d",i,valores[i]);
     }
     //agora vamos selecionar os filmes para sugerir conforme as categorias mais vistas
     filmescatpref = fopen("filmescatpreferida.txt","w+");
     while(count_filmescatpref < nFilmes){
         filmesnvistos = fopen("filmesnaovistos.txt","r");
-        int categoria_anterior = categoria_a_sugerir;
+        printf("\ncategoria a sugerir antes = %d",categoria_atual);
+        categoria_anterior = categoria_a_sugerir;
+        printf("\ncategoria anterior = %d",categoria_anterior);
+        printf("\nababa");
         cat = CategoriaASugerir(valores,&categoria_a_sugerir); //categoria mais vista pelo user
-        int categoria_atual = categoria_a_sugerir;
+        printf("\ncategoria a sugerir = %d",categoria_a_sugerir);
+        printf("\n-------");
+        //sleep(1);
+        categoria_atual = categoria_a_sugerir;
         while(fscanf(filmesnvistos,"%d_%f_%s\n",&id,&rating,categoria)!=EOF)
         {
-            if(strcmp(categoria,cat)==0){
+            if(strcmp(categoria,cat) == 0){
+                printf("\n\nentrei aqui ");
+                categoria_atual = categoria_a_sugerir;
                 sprintf(filmes,"%d_%.2lf_%s\n",
                 id,rating,categoria);
                 fputs(filmes,filmescatpref);
                 count_filmescatpref ++;
-                insert_sorted(sorted,ids, count,id,rating,categoria_anterior,categoria_atual,count_filmescatpref); 
+                insert_sorted(sorted,ids, count,id,rating,categoria_anterior,categoria_atual,count_filmescatpref,nFilmes); 
                 count ++;
             }
-        printf("\ncount = %d",count);
+            else{
+                if(categoria_atual = categoria_anterior)
+                    tentativa_insercao ++;
+                if(tentativa_insercao == 20){
+                ids[count]= 0;
+                count_filmescatpref++;
+                }
+            }
         }
-        //memset(sorted,0,sizeof(sorted));
-        //count =0;
+        
+       
 
     }
+    
     fclose(filmesnvistos);
     fclose(filmescatpref);
     filmescatpref = fopen("filmescatpreferida.txt","r");
 
-    printf("\ncount = %d",count);
     for (int i = count-1; i >= 0; i-- ) 
     {
         printf("\n%d",ids[i]);
@@ -635,12 +656,15 @@ vetor* sugestoes(colecaoFilmes* colecFilmes, colecaoClientes *td,char* username,
         vetor_insere(sugestoes,0,-1);
         count ++;
     }
-    fclose(filmescatpref);
+    //fclose(filmescatpref);
 
     //free dos mallocs
-    //free(cat);
-    //free(valores);
-    //free(categoria);
+    free(cat);
+    free(valores);
+    free(categoria);
+    free(sorted);
+    free(filmes);
+    free(ids);
     return sugestoes; 
 }
 

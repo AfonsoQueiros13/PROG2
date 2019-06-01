@@ -17,7 +17,7 @@ int maior(int array[10]){
 
 char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
     int max =valores[0]; 
-    char *cat =(char*)malloc(sizeof(char));
+    char *cat =(char*)malloc(20*sizeof(char));
     for (int i = 1; i < 10; i++){ //vamos ver qual é a categoria predominante
         if (valores[i] > max && i != *categoria_a_sugerir){
             max = valores[i];
@@ -68,14 +68,15 @@ char* CategoriaASugerir(int* valores,int *categoria_a_sugerir){
 }
 
 
-void insert_sorted (float *sorted,int *ids, int count,int id, float value,int anterior,int atual,int posicao)
+void insert_sorted (float *sorted,int *ids, int count,int id, float value,int anterior,int atual,int posicao,int nFilmes)
 {
     int i = 0;
- 
+    printf("\nanterior = %d \t atual = %d",anterior,atual);
     if(anterior == atual){
         printf("id = %d",ids[count]);
         sorted[count] = value;
         ids[count] = id;
+        printf("->_>_> id[%d] = %d",count,ids[count]);
         if (count == 0) return;
         for (i = count;i > 0; i--) {
             if (value < sorted[i-1]) 
@@ -90,8 +91,16 @@ void insert_sorted (float *sorted,int *ids, int count,int id, float value,int an
         ids[i] = id;
     }
     else{
-        sorted[count] = value;
-        ids[posicao] = id;
+        int j;
+        //int temp1= ids[0];
+        ids[nFilmes-1] = id;
+        /*ids[nFilmes-1] = temp1;
+        printf("\nids [%d] = %d",nFilmes-1,ids[nFilmes-1]);
+        int temp = ids[0], i; 
+    for (j = 0; j < nFilmes-1; j++) 
+        ids[j] = ids[j + 1]; 
+  
+    ids[j] = temp; */
     }
 }
 
@@ -103,12 +112,11 @@ int * categoriasMaisVista(colecaoFilmes* colecFilmes, colecaoClientes *td,char* 
     int filmID;
     unsigned long position;
     long index;
-    int *contador = (int*)malloc(2*sizeof(int));
-    char *cat =(char*)malloc(sizeof(char));
-    for(int i=0;i< 10 ;i++)
-        contador[i] = 0;
+    int *contador = (int*)malloc(100*sizeof(int));
+    memset(contador, 0,100*sizeof(int));
     elementoCliente* elem_client;
     elementoFilme* elem_film;
+    //for(in)
     //primeira coisa a sugerir -> filmes com a categoria mais vista pelo utilizador
     /* calcula hash para a string a adicionar */
     index = hash_cliente(username, td->tamanho);
